@@ -3,6 +3,8 @@ package br.com.barbearia_agendamentos_api.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "barbers")
 @Getter
@@ -22,5 +24,13 @@ public class Barber {
 
     @Column(nullable = false)
     private Boolean ativo;
+
+    @OneToMany
+    @JoinTable(
+            name = "barber_services",
+            joinColumns = @JoinColumn(name = "barber_id"),
+            inverseJoinColumns = @JoinColumn(name = "service_id")
+    )
+    private List<Service> services;
 
 }
