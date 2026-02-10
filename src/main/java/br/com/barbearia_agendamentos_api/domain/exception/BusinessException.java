@@ -1,4 +1,4 @@
-package br.com.barbearia_agendamentos_api.exception;
+package br.com.barbearia_agendamentos_api.domain.exception;
 
 public class BusinessException extends  RuntimeException{
 
