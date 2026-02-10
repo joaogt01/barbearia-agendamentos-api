@@ -31,6 +31,6 @@ public class Barber {
             joinColumns = @JoinColumn(name = "barber_id"),
             inverseJoinColumns = @JoinColumn(name = "service_id")
     )
-    private List<Service> services;
+    private List<BarberService> services;
 
 }

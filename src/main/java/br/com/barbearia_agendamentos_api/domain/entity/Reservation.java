@@ -31,7 +31,7 @@ public class Reservation {
 
     @ManyToOne
     @JoinColumn(name = "service_id", nullable = false)
-    private Service service;
+    private BarberService service;
 
     @Column(nullable = false)
     private LocalDate data;
