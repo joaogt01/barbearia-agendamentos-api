@@ -21,6 +21,6 @@ public class Barber {
     private User user;
 
     @Column(nullable = false)
-    private boolean ativo;
+    private Boolean ativo;
 
 }
