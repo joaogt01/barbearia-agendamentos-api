@@ -1,44 +1,71 @@
 package br.com.barbearia_agendamentos_api.service;
 
 
+import br.com.barbearia_agendamentos_api.domain.entity.Barber;
+import br.com.barbearia_agendamentos_api.domain.entity.BarberService;
 import br.com.barbearia_agendamentos_api.domain.entity.Reservation;
-import br.com.barbearia_agendamentos_api.domain.exception.BusinessException;
+import br.com.barbearia_agendamentos_api.domain.entity.User;
+import br.com.barbearia_agendamentos_api.domain.exception.ResourceNotFoundException;
 import br.com.barbearia_agendamentos_api.domain.exception.ScheduleConflictException;
+import br.com.barbearia_agendamentos_api.domain.mapper.ReservationMapper;
+import br.com.barbearia_agendamentos_api.dto.reservation.ReservationRequest;
+import br.com.barbearia_agendamentos_api.dto.reservation.ReservationResponse;
+import br.com.barbearia_agendamentos_api.repository.BarberRepository;
 import br.com.barbearia_agendamentos_api.repository.ReservationRepository;
+import br.com.barbearia_agendamentos_api.repository.ServiceRepository;
+import br.com.barbearia_agendamentos_api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalTime;
 
 @Service
 @RequiredArgsConstructor
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
-    private final UserService userService;
-    private final BarberService barberService;
-    private final ServiceService serviceService;
-    private final BusinessHoursService businessHoursService;
-    private final ScheduleBlockService scheduleBlockService;
+    private final UserRepository userRepository;
+    private final BarberRepository barberRepository;
+    private final ServiceRepository serviceRepository;
 
-    public Reservation create(Reservation reservation){
+    public ReservationResponse create(ReservationRequest request){
 
-        userService.findUserById(reservation.getCliente().getId());
-        barberService.findBarberById(reservation.getBarber().getId());
-        serviceService.findServiceById(reservation.getService().getId());
+        User cliente = userRepository.findById(request.getClienteId())
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
 
-        if (!businessHoursService.isOpen(
-                reservation.getData().atTime(reservation.getHoraInicio()))){
-            throw new BusinessException("Barbearia fechada no horario selecionado");
+        Barber barber = barberRepository.findById(request.getBarberId())
+                .orElseThrow(() -> new ResourceNotFoundException("Barbeiro não encontrado"));
+
+        BarberService service = serviceRepository.findById(request.getServiceId())
+                .orElseThrow(()-> new ResourceNotFoundException("Serviço não encontrado"));
+
+        LocalTime horaFim = request.getHoraInicio()
+                .plusMinutes(service.getDuracaoMinutos());
+
+        boolean conflito = reservationRepository
+                .existsByBarberIdAndDataAndHoraInicioLessThanAndHoraFimGreaterThan(
+                        barber.getId(),
+                        request.getData(),
+                        horaFim,
+                        request.getHoraInicio()
+                );
+
+        if (conflito){
+            throw new ScheduleConflictException("Horario ja reservado");
         }
 
-        if (scheduleBlockService.blockExist(
-                reservation.getBarber().getId(),
-                reservation.getData(),
-                reservation.getHoraInicio(),
-                reservation.getHoraFim())) {
-            throw new ScheduleConflictException("Horário indisponivel para este barbeiro");
-        }
+        Reservation reservation = Reservation.builder()
+                .cliente(cliente)
+                .barber(barber)
+                .service(service)
+                .data(request.getData())
+                .horaInicio(request.getHoraInicio())
+                .horaFim(horaFim)
+                .build();
 
-        return reservationRepository.save(reservation);
+        reservationRepository.save(reservation);
+
+        return ReservationMapper.toResponse(reservation);
     }
 
 }
