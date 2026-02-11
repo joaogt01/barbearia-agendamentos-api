@@ -1,0 +1,16 @@
+package br.com.barbearia_agendamentos_api.dto.user;
+
+import br.com.barbearia_agendamentos_api.domain.enums.Role;
+import lombok.Builder;
+import lombok.Getter;
+
+@Getter
+@Builder
+public class UserResponse {
+
+    private Long id;
+    private String nome;
+    private String email;
+    private Role role;
+    private Boolean ativo;
+}
