@@ -1,8 +1,13 @@
 package br.com.barbearia_agendamentos_api.service;
 
 import br.com.barbearia_agendamentos_api.domain.entity.Barber;
+import br.com.barbearia_agendamentos_api.domain.entity.User;
 import br.com.barbearia_agendamentos_api.domain.exception.ResourceNotFoundException;
+import br.com.barbearia_agendamentos_api.domain.mapper.BarberMapper;
+import br.com.barbearia_agendamentos_api.dto.barber.BarberRequest;
+import br.com.barbearia_agendamentos_api.dto.barber.BarberResponse;
 import br.com.barbearia_agendamentos_api.repository.BarberRepository;
+import br.com.barbearia_agendamentos_api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,16 +16,21 @@ import org.springframework.stereotype.Service;
 public class BarberService {
 
     private final BarberRepository barberRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
 
-    public Barber create(Barber barber){
-        userService.findUserById(barber.getUser().getId());
-        barber.setAtivo(true);
-        return barberRepository.save(barber);
+    public BarberResponse create(BarberRequest request){
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(()-> new ResourceNotFoundException("Usuario não encontrado."));
+
+        Barber barber = Barber.builder()
+                .user(user)
+                .ativo(true)
+                .build();
+
+        barberRepository.save(barber);
+
+        return BarberMapper.toResponse(barber);
+
     }
 
-    public Barber findBarberById(Long id){
-        return barberRepository.findById(id)
-                .orElseThrow(()-> new ResourceNotFoundException("Barbeiro não encontrado"));
-    }
 }
