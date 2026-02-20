@@ -1,5 +1,8 @@
 package br.com.barbearia_agendamentos_api.controller;
 
+import br.com.barbearia_agendamentos_api.dto.auth.AuthResponse;
+import br.com.barbearia_agendamentos_api.dto.auth.LoginRequest;
+import br.com.barbearia_agendamentos_api.dto.auth.RegisterRequest;
 import br.com.barbearia_agendamentos_api.service.AuthService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,23 +18,13 @@ public class AuthController {
 
     private final AuthService authService;
 
+    @PostMapping("/register")
+    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
+        return ResponseEntity.ok(authService.register(request));
+    }
+
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request){
-        String token = authService.login(request.getEmail(), request.getPassword());
-
-        return ResponseEntity.ok(new LoginResponse(token));
-    }
-
-    @Getter
-    @Setter
-    public static class LoginRequest{
-        private String email;
-        private String password;
-    }
-
-    @AllArgsConstructor
-    @Getter
-    public static class LoginResponse{
-        private String token;
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request){
+        return ResponseEntity.ok(authService.login(request));
     }
 }

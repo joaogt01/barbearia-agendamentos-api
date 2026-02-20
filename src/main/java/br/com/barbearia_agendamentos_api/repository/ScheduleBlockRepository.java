@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface ScheduleBlockRepository extends JpaRepository<ScheduleBlock, Long> {
 
-    List<ScheduleBlock> findBarberIdAndData(Long barberId, LocalDate data);
+    List<ScheduleBlock> findByBarberIdAndData(Long barberId, LocalDate data);
 
 }

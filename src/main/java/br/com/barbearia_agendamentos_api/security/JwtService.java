@@ -6,6 +6,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -33,7 +34,7 @@ public class JwtService {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public String extractUserId(String token){
+    public Long extractUserId(String token){
         return extractClaim(token, claims -> claims.get("userId", Long.class));
     }
 
@@ -41,9 +42,9 @@ public class JwtService {
         return extractClaim(token, claims -> claims.get("role", String.class));
     }
 
-    public boolean isTokenValid(String token, String email) {
+    public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
-        return username.equals(email) && !isTokenExpired(token);
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {
@@ -64,8 +65,7 @@ public class JwtService {
     }
 
     private Key getSingKey() {
-        byte[] keyBytes = jwtProperties.getSecret().getBytes();
-        return Keys.hmacShaKeyFor(keyBytes);
+        return Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes());
     }
 
 }

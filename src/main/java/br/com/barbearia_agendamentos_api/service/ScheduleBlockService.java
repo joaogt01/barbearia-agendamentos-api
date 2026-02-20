@@ -20,7 +20,7 @@ public class ScheduleBlockService {
 
     public List<ScheduleBlockResponse> findByBarberAndDate(Long barberId, LocalDate date) {
 
-        return scheduleBlockRepository.findBarberIdAndData(barberId, date)
+        return scheduleBlockRepository.findByBarberIdAndData(barberId, date)
                 .stream()
                 .map(ScheduleBlockMapper::toResponse)
                 .collect(Collectors.toList());
