@@ -1,5 +1,6 @@
 package br.com.barbearia_agendamentos_api.domain.entity;
 
+
 import jakarta.persistence.*;
 import lombok.*;
 
