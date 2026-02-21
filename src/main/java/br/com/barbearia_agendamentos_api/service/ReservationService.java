@@ -93,7 +93,7 @@ public class ReservationService {
     }
 
     public List<ReservationResponse> findByClientId(Long clienteId) {
-        return reservationRepository.findByClientId(clienteId)
+        return reservationRepository.findByClienteId(clienteId)
                 .stream()
                 .map(this::toResponse)
                 .toList();
