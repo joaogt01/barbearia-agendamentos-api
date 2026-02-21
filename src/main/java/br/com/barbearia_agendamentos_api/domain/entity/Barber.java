@@ -26,7 +26,7 @@ public class Barber {
     @Column(nullable = false)
     private Boolean ativo;
 
-    @OneToMany
+    @ManyToMany
     @JoinTable(
             name = "barber_services",
             joinColumns = @JoinColumn(name = "barber_id"),

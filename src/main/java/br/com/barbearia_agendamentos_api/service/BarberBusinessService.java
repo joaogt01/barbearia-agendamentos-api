@@ -73,10 +73,6 @@ public class BarberBusinessService {
             barber.setServices(services);
         }
 
-        if (request.getAtivo() != null) {
-            barber.setAtivo(request.getAtivo());
-        }
-
         Barber updated = barberRepository.save(barber);
 
         return barberMapper.toResponse(updated);

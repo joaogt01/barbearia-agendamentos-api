@@ -1,6 +1,5 @@
 package br.com.barbearia_agendamentos_api.dto.barber;
 
-import br.com.barbearia_agendamentos_api.dto.user.UserResponse;
 import lombok.Builder;
 import lombok.Getter;
 

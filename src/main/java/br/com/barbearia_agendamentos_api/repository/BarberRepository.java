@@ -10,4 +10,7 @@ public interface BarberRepository extends JpaRepository<Barber, Long> {
 
     boolean existsByUser(User user);
 
+    Optional<Barber> findByUserId(Long userId);
+
+
 }

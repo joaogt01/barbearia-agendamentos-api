@@ -3,6 +3,7 @@ package br.com.barbearia_agendamentos_api.domain.entity;
 import br.com.barbearia_agendamentos_api.domain.enums.ReservationStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -46,9 +47,11 @@ public class Reservation {
     @Column(nullable = false)
     private ReservationStatus status;
 
+    @CreationTimestamp
     @Column(nullable = false)
     private LocalDateTime dataCriacao;
 
+    @PrePersist
     private void prePersist(){
         this.status = ReservationStatus.AGENDADA;
         this.dataCriacao = LocalDateTime.now();

@@ -22,4 +22,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             LocalTime horaFim,
             LocalTime horaInicio
     );
+
+    List<Reservation> findByClientId(Long clientId);
 }

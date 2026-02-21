@@ -85,4 +85,8 @@ public class User implements UserDetails {
     public boolean isEnabled(){
         return ativo;
     }
+
+    @OneToOne(mappedBy = "user")
+    private Barber barber;
+
 }

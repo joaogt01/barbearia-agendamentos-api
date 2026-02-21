@@ -17,5 +17,4 @@ public class BarberRequest {
 
     private List<Long> serviceIds;
 
-    private Boolean ativo;
 }
