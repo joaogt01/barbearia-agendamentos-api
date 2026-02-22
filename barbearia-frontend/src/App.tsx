@@ -1,45 +1,37 @@
-import { useEffect, useState } from "react";
-import { api } from "./api/api";
-
-type Barber = {
-  id: number;
-  name: string;
-};
+import { Routes, Route, Link } from "react-router-dom";
+import Login from "./pages/Login";
+import Barbers from "./pages/Barbers";
+import Register from "./pages/Register";
+import PrivateRoute from "./components/PrivateRoute";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
-  const [barbers, setBarbers] = useState<Barber[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    api.get("/api/barbers")
-      .then(response => {
-        setBarbers(response.data);
-      })
-      .catch(err => {
-        console.error(err);
-        setError("Erro ao buscar barbeiros");
-      })
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (loading) return <p>Carregando...</p>;
-  if (error) return <p>{error}</p>;
-
   return (
     <div>
-      <h1>Barbeiros</h1>
+          <nav className="navbar">
+            <h1> Barbearia</h1>
 
-      {barbers.length === 0 ? (
-        <p>Nenhum barbeiro encontrado</p>
-      ) : (
-        <ul>
-          {barbers.map(barber => (
-            <li key={barber.id}>{barber.name}</li>
-          ))}
-        </ul>
-      )}
-    </div>
+            <div className="nav-links">
+              <Link to="/login">Login</Link>
+              <Link to="/register">Cadastrar</Link>
+            </div>
+          </nav>
+
+          <Routes>
+            <Route path="/barbers" element={<Barbers />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+
+            <Route
+                path="/dashboard"
+                element={
+                    <PrivateRoute>
+                      <Dashboard />
+                    </PrivateRoute>
+                  }
+              />
+          </Routes>
+        </div>
   );
 }
 
