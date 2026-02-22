@@ -1,4 +1,3 @@
-/* client-dashboard.css */
 
 .client-container {
   max-width: 1000px;
@@ -8,7 +7,6 @@
   color: #fff;
 }
 
-/* Header de Boas-vindas */
 .client-header {
   border-left: 5px solid var(--cyber-blue);
   padding-left: 20px;
@@ -24,7 +22,6 @@
   margin: 0;
 }
 
-/* Cards de Escolha de Serviço/Barbeiro */
 .selection-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));

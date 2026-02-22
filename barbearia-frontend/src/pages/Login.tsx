@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { api, setAuthToken } from "../api/api";
 import { useNavigate, Link } from "react-router-dom";
+import "../styles/login.css";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -42,34 +43,42 @@ export default function Login() {
   }
 
   return (
-      <div className="cyber-bg">
-            <form className="cyber-card" onSubmit={handleLogin}>
-              <h1 className="cyber-title">LOGIN</h1>
+      <div className="login-page">
+            <div className="login-box">
+              <h1 className="login-title">LOGIN</h1>
 
-              <input
-                className="cyber-input"
-                type="email"
-                placeholder="EMAIL"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+              <form onSubmit={handleLogin}>
+                <div className="login-field">
+                  <label>ID_USUARIO (EMAIL)</label>
+                  <input
+                    type="email"
+                    placeholder="seuemail@nightcity.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
 
-              <input
-                className="cyber-input"
-                type="password"
-                placeholder="SENHA"
-                value={senha}
-                onChange={(e) => setSenha(e.target.value)}
-              />
+                <div className="login-field">
+                  <label>CHAVE_ACESSO (SENHA)</label>
+                  <input
+                    type="password"
+                    placeholder="********"
+                    value={senha}
+                    onChange={(e) => setSenha(e.target.value)}
+                    required
+                  />
+                </div>
 
-              <button className="cyber-button" type="submit">
-                ENTRAR
-              </button>
+                <button type="submit" className="login-btn">
+                  ESTABELECER_CONEXAO
+                </button>
+              </form>
 
-              <div className="cyber-link">
-                <Link to="/register">CRIAR CONTA</Link>
+              <div className="login-footer">
+                AINDA NÃO É UM MERCENÁRIO? <Link to="/register">CRIAR_CONTA</Link>
               </div>
-            </form>
+            </div>
           </div>
   );
 }

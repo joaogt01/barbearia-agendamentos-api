@@ -1,3 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Orbitron', sans-serif;
+
+  background: radial-gradient(circle at top, #0f0f1a, #050507) !important;
+  background-attachment: fixed;
+  color: #e0e0ff;
+  min-height: 100vh;
+}
+
 .navbar {
   background: #020617;
   padding: 16px 32px;
