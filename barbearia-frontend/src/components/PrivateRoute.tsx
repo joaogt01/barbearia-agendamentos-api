@@ -1,11 +1,20 @@
 import { Navigate } from "react-router-dom";
+import { ReactNode } from "react";
 
-export default function PrivateRoute({ children }: any) {
+type PrivateRouteProps = {
+    children: ReactNode;
+    role?: "ADMIN" | "CLIENT";
+    };
+
+export default function PrivateRoute({ children, role }: PrivateRouteProps) {
   const token = localStorage.getItem("token");
+  const userRole = localStorage.getItem("role");
 
   if (!token) {
     return <Navigate to="/login" />;
   }
 
-  return children;
+  if (role && role !== userRole) return <Navigate to="/login" />
+
+  return <>{children}</>;
 }

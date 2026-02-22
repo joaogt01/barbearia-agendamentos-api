@@ -1,5 +1,6 @@
 package br.com.barbearia_agendamentos_api.controller;
 
+import br.com.barbearia_agendamentos_api.domain.enums.Role;
 import br.com.barbearia_agendamentos_api.dto.user.UserRequest;
 import br.com.barbearia_agendamentos_api.dto.user.UserResponse;
 import br.com.barbearia_agendamentos_api.service.UserService;
@@ -34,6 +35,20 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<UserResponse>> findAll(){
         return ResponseEntity.ok(userService.findAll());
+    }
+
+    @GetMapping("/available-users")
+    public ResponseEntity<List<UserResponse>> getAvailableBarbers() {
+        return ResponseEntity.ok(userService.findAllByRole(Role.CLIENTE));}
+
+    @PatchMapping("/{id}/role")
+    public ResponseEntity<Void> updateRole(@PathVariable Long id, @RequestBody String role) {
+        userService.updateRole(id, Role.valueOf(role));
+        return ResponseEntity.ok().build();}
+
+    @GetMapping("/role/{role}")
+    public ResponseEntity<List<UserResponse>> findByRole(@PathVariable Role role) {
+        return ResponseEntity.ok(userService.findAllByRole(role));
     }
 
 }

@@ -1,38 +1,49 @@
-import { Routes, Route, Link } from "react-router-dom";
+import {BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Login from "./pages/Login";
 import Barbers from "./pages/Barbers";
 import Register from "./pages/Register";
 import PrivateRoute from "./components/PrivateRoute";
-import Dashboard from "./pages/Dashboard";
+import DashboardAdmin from "./pages/DashboardAdmin";
+import DashboardClient from "./pages/DashboardClient";
+import AdminBarberForm from "./components/AdminBarberForm";
+
 
 function App() {
   return (
-    <div>
-          <nav className="navbar">
-            <h1> Barbearia</h1>
+         <Routes>
+           <Route path="/login" element={<Login />} />
+           <Route path="/register" element={<Register />} />
 
-            <div className="nav-links">
-              <Link to="/login">Login</Link>
-              <Link to="/register">Cadastrar</Link>
-            </div>
-          </nav>
+           <Route
+             path="/admin/cadastrar-barbeiro"
+             element={
+               <PrivateRoute role="ADMIN">
+                 <AdminBarberForm />
+               </PrivateRoute>
+             }
+           />
 
-          <Routes>
-            <Route path="/barbers" element={<Barbers />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+           <Route
+             path="/dashboard-admin"
+             element={
+               <PrivateRoute role="ADMIN">
+                 <DashboardAdmin />
+               </PrivateRoute>
+             }
+           />
 
-            <Route
-                path="/dashboard"
-                element={
-                    <PrivateRoute>
-                      <Dashboard />
-                    </PrivateRoute>
-                  }
-              />
-          </Routes>
-        </div>
-  );
+           <Route
+             path="/dashboard-client"
+             element={
+               <PrivateRoute role="CLIENTE">
+                 <DashboardClient />
+               </PrivateRoute>
+             }
+           />
+
+           <Route path="*" element={<Login />} />
+         </Routes>
+     );
 }
 
 export default App;

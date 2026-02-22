@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { api } from "../api/api";
+import { api, setAuthToken } from "../api/api";
 import { useNavigate, Link } from "react-router-dom";
 
 export default function Login() {
@@ -18,16 +18,22 @@ export default function Login() {
     try {
       const response = await api.post("/auth/login", {
         email,
-        senha,
+        senha
       });
 
-      const token = response.data.token
+      const {token, role}  = response.data;
 
       localStorage.setItem("token", token);
+      localStorage.setItem("role", role);
 
-      api.defaults.headers.Authorization = 'Bearer ${token}'
+      api.defaults.headers.Authorization = `Bearer ${token}`;
 
-      navigate("/dashboard");
+      if (role === "ADMIN") {
+            navigate("/dashboard-admin");
+          } else if (role === "CLIENTE") {
+            navigate("/dashboard-client");
+          }
+
     } catch (err: any) {
         setError("Credenciais inválidas")
       } finally {
@@ -50,7 +56,7 @@ export default function Login() {
 
               <input
                 className="cyber-input"
-                type="senha"
+                type="password"
                 placeholder="SENHA"
                 value={senha}
                 onChange={(e) => setSenha(e.target.value)}

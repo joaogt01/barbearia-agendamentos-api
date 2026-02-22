@@ -37,20 +37,19 @@ public class AuthService {
         user.setAtivo(true);
         user.setDataCriacao(LocalDateTime.now());
 
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
 
-        String token = jwtService.generateToken(user);
+        String token = jwtService.generateToken(savedUser);
 
-        return new AuthResponse(token);
+        return new AuthResponse(token, savedUser.getRole().name(), savedUser.getId());
     }
 
     public AuthResponse login(LoginRequest request) {
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getSenha()));
 
-        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-
-        String token = jwtService.generateToken(user);
-        return new AuthResponse(token);
+        User savedUser = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        String token = jwtService.generateToken(savedUser);
+        return new AuthResponse(token, savedUser.getRole().name(), savedUser.getId());
     }
 }

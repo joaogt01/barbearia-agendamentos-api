@@ -1,0 +1,86 @@
+/* client-dashboard.css */
+
+.client-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  font-family: 'Rajdhani', sans-serif;
+  color: #fff;
+}
+
+/* Header de Boas-vindas */
+.client-header {
+  border-left: 5px solid var(--cyber-blue);
+  padding-left: 20px;
+  margin-bottom: 3rem;
+  background: rgba(0, 240, 255, 0.05);
+}
+
+.client-header h1 {
+  font-family: var(--font-cyber);
+  color: var(--cyber-blue);
+  text-transform: uppercase;
+  font-size: 2rem;
+  margin: 0;
+}
+
+/* Cards de Escolha de Serviço/Barbeiro */
+.selection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.selection-card {
+  background: #111;
+  border: 1px solid #333;
+  padding: 1.5rem;
+  position: relative;
+  transition: 0.4s;
+  cursor: pointer;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 85%, 92% 100%, 0% 100%);
+}
+
+.selection-card:hover {
+  border-color: var(--cyber-yellow);
+  box-shadow: 0 0 20px rgba(252, 238, 10, 0.15);
+  transform: translateY(-5px);
+}
+
+.selection-card h3 {
+  color: var(--cyber-yellow);
+  font-family: var(--font-cyber);
+  text-transform: uppercase;
+  margin-top: 0;
+}
+
+
+.btn-confirm-appointment {
+  width: 100%;
+  margin-top: 2rem;
+  padding: 1.2rem;
+  background: transparent;
+  border: 2px solid var(--cyber-blue);
+  color: var(--cyber-blue);
+  font-family: var(--font-cyber);
+  font-weight: bold;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 0.3s;
+  clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%);
+}
+
+.btn-confirm-appointment:hover {
+  background: var(--cyber-blue);
+  color: #000;
+  box-shadow: 0 0 30px var(--cyber-blue);
+}
+
+
+.my-appointments {
+  margin-top: 4rem;
+  background: rgba(255, 0, 60, 0.02);
+  padding: 2rem;
+  border: 1px dashed var(--cyber-pink);
+}

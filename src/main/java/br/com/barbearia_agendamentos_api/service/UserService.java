@@ -1,6 +1,7 @@
 package br.com.barbearia_agendamentos_api.service;
 
 import br.com.barbearia_agendamentos_api.domain.entity.User;
+import br.com.barbearia_agendamentos_api.domain.enums.Role;
 import br.com.barbearia_agendamentos_api.domain.exception.ResourceNotFoundException;
 import br.com.barbearia_agendamentos_api.domain.mapper.UserMapper;
 import br.com.barbearia_agendamentos_api.dto.user.UserRequest;
@@ -8,6 +9,7 @@ import br.com.barbearia_agendamentos_api.dto.user.UserResponse;
 import br.com.barbearia_agendamentos_api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,5 +57,20 @@ public class UserService {
                 .stream()
                 .map(UserMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    public List<UserResponse> findAllByRole(Role role) {
+        return userRepository.findByRoleAndAtivoTrue(role)
+                .stream()
+                .map(user -> new UserResponse(user.getId(), user.getNome(), user.getEmail(), user.getRole(), user.getAtivo()))
+                .toList();
+    }
+
+    @Transactional
+    public void updateRole(Long id, Role newRole) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        user.setRole(newRole);
+        userRepository.save(user);
     }
 }

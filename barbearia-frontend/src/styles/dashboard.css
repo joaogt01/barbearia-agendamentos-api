@@ -1,15 +1,272 @@
-.dashboard {
-  padding: 40px;
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap');
+
+:root {
+  --cyber-yellow: #fcee0a;
+  --cyber-blue: #00f0ff;
+  --cyber-pink: #ff003c;
+  --bg-black: #050505;
+  --card-bg: rgba(20, 20, 20, 0.9);
+  --font-main: 'Rajdhani', sans-serif;
+  --font-cyber: 'Orbitron', sans-serif;
 }
 
-.dashboard h2 {
-  margin-bottom: 20px;
+body {
+  background-color: var(--bg-black);
+  background-image:
+    linear-gradient(rgba(252, 238, 10, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(252, 238, 10, 0.05) 1px, transparent 1px);
+  background-size: 30px 30px; /* Efeito de grade no fundo */
 }
 
-.card {
-  background: #020617;
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 16px;
-  border: 1px solid #1e293b;
+.admin-container {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: var(--font-main);
+}
+
+.admin-title {
+  font-family: var(--font-cyber);
+  font-size: 3rem;
+  color: var(--cyber-yellow);
+  text-transform: uppercase;
+  text-align: center;
+  font-style: italic;
+  text-shadow: 3px 3px 0px var(--cyber-pink);
+  margin-bottom: 2rem;
+}
+
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.metric-card {
+  background: var(--card-bg);
+  border: 2px solid var(--cyber-blue);
+  padding: 1.5rem;
+  clip-path: polygon(0 0, 100% 0, 100% 80%, 85% 100%, 0 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-card::before {
+  content: "SYSTEM_DATA";
+  position: absolute;
+  top: 2px;
+  right: 5px;
+  font-size: 0.6rem;
+  color: var(--cyber-blue);
+  opacity: 0.5;
+}
+
+.metric-card .label {
+  color: var(--cyber-blue);
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.metric-card .value {
+  font-family: var(--font-cyber);
+  font-size: 2.5rem;
+  color: #fff;
+  display: block;
+}
+
+
+.dashboard-content {
+  display: grid;
+  grid-template-columns: 500px 1fr;
+  gap: 4rem;
+  align-items: start;
+  margin-top: 2rem;
+}
+
+
+.barber-card {
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid var(--cyber-yellow);
+  margin-bottom: 1rem;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  transition: 0.3s;
+  position: relative;
+}
+
+.barber-card:hover {
+  box-shadow: 0 0 15px var(--cyber-yellow);
+  transform: scale(1.02);
+}
+
+.barber-card.active { border-right: 8px solid var(--cyber-blue); }
+.barber-card.inactive { border-right: 8px solid var(--cyber-pink); opacity: 0.6; }
+
+.barber-info h3 {
+  color: var(--cyber-yellow);
+  font-family: var(--font-cyber);
+  margin: 0;
+}
+
+.barber-info p { color: #aaa; margin: 0; font-size: 0.9rem; }
+
+
+.delete-btn {
+  background: var(--cyber-pink);
+  color: white;
+  border: none;
+  font-family: var(--font-cyber);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  clip-path: polygon(10% 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.delete-btn:hover {
+  background: white;
+  color: var(--cyber-pink);
+}
+
+
+.form-section {
+  top: 20px;
+  background: var(--card-bg);
+  padding: 2rem;
+  border: 1px solid var(--cyber-yellow);
+  box-shadow: -5px 5px 0px var(--cyber-pink);
+  border-radius: 4px;
+}
+.form-section select,
+.form-section input {
+  width: 100%;
+  background: #1a1a1a;
+  border: 1px solid var(--cyber-blue);
+  color: var(--cyber-yellow);
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+  font-family: var(--font-main);
+  outline: none;
+}
+
+.form-section select:focus {
+  border-color: var(--cyber-yellow);
+  box-shadow: 0 0 10px var(--cyber-yellow);
+}
+
+.form-section button[type="submit"] {
+  width: 100%;
+  background: var(--cyber-yellow);
+  color: #000;
+  font-family: var(--font-cyber);
+  font-weight: bold;
+  padding: 1rem;
+  border: none;
+  cursor: pointer;
+  clip-path: polygon(0 0, 90% 0, 100% 30%, 100% 100%, 0 100%); /* Corte diagonal */
+  transition: 0.3s;
+}
+
+.form-section button[type="submit"]:hover {
+  background: var(--cyber-blue);
+  letter-spacing: 2px;
+}
+
+.section-subtitle {
+  font-family: var(--font-cyber);
+  color: var(--cyber-blue);
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid var(--cyber-blue);
+  padding-left: 10px;
+  font-size: 1.2rem;
+}
+
+.admin-navbar {
+  background: rgba(0, 0, 0, 0.9);
+  border-bottom: 2px solid var(--cyber-yellow);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  position: relative;
+  box-shadow: 0 4px 15px rgba(252, 238, 10, 0.2);
+}
+
+/* Detalhe decorativo no canto da Navbar */
+.admin-navbar::after {
+  content: "ACCESS_GRANTED";
+  position: absolute;
+  bottom: -15px;
+  right: 20px;
+  font-family: var(--font-cyber);
+  font-size: 0.6rem;
+  background: var(--cyber-yellow);
+  color: #000;
+  padding: 2px 5px;
+}
+
+.nav-logo {
+  font-family: var(--font-cyber);
+  color: var(--cyber-yellow);
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-decoration: none;
+  font-style: italic;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+
+.nav-link {
+  color: var(--cyber-blue);
+  text-decoration: none;
+  font-family: var(--font-main);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: 0.3s;
+  position: relative;
+}
+
+.nav-link:hover {
+  color: var(--cyber-yellow);
+  text-shadow: 0 0 8px var(--cyber-yellow);
+}
+
+/* Efeito de "ponteiro" no hover */
+.nav-link::before {
+  content: ">";
+  position: absolute;
+  left: -15px;
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.nav-link:hover::before {
+  opacity: 1;
+  left: -12px;
+}
+
+.logout-btn {
+  background: transparent;
+  border: 1px solid var(--cyber-pink);
+  color: var(--cyber-pink);
+  font-family: var(--font-cyber);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%);
+  transition: 0.3s;
+}
+
+.logout-btn:hover {
+  background: var(--cyber-pink);
+  color: white;
+  box-shadow: 0 0 15px var(--cyber-pink);
 }

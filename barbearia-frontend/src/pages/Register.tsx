@@ -36,8 +36,8 @@ function Register() {
               className="cyber-input"
               type="text"
               placeholder="NOME"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={nome}
+              onChange={(e) => setNome(e.target.value)}
             />
 
             <input

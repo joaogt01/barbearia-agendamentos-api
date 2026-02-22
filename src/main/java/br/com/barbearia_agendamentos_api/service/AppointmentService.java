@@ -3,9 +3,10 @@ package br.com.barbearia_agendamentos_api.service;
 import br.com.barbearia_agendamentos_api.dto.appointment.AppointmentRequest;
 import br.com.barbearia_agendamentos_api.dto.appointment.AppointmentResponse;
 import br.com.barbearia_agendamentos_api.dto.appointment.UpdateStatusRequest;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class AppointmentService {
 
     public AppointmentResponse create(AppointmentRequest request) {
