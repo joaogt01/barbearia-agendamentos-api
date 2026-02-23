@@ -1,25 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap');
-
-:root {
-  --cyber-yellow: #fcee0a;
-  --cyber-blue: #00f0ff;
-  --cyber-pink: #ff003c;
-  --bg-black: #050505;
-}
-
-.login-page {
+.register-page {
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--bg-black);
-
-  background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
-                    linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-  background-size: 100% 2px, 3px 100%;
+  background: transparent;
+  background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+  background-size: 100% 4px;
 }
 
-.login-box {
+.register-box {
   width: 100%;
   max-width: 400px;
   background: rgba(10, 10, 10, 0.9);
@@ -30,8 +19,8 @@
   clip-path: polygon(0 0, 100% 0, 100% 90%, 90% 100%, 0 100%);
 }
 
-.login-box::before {
-  content: "USER_AUTHENTICATION_REQUIRED";
+.register-box::before {
+  content: "USER_ENROLLMENT_REQUIRED";
   position: absolute;
   top: -20px;
   left: 0;
@@ -40,7 +29,7 @@
   color: var(--cyber-yellow);
 }
 
-.login-title {
+.register-title {
   font-family: 'Orbitron', sans-serif;
   color: var(--cyber-yellow);
   text-align: center;
@@ -50,37 +39,38 @@
   font-size: 1.8rem;
 }
 
-.login-field {
-  margin-bottom: 1.5rem;
+.register-field {
+  margin-bottom: 1.2rem;
 }
 
-.login-field label {
+.register-field label {
   display: block;
   color: var(--cyber-blue);
   font-family: 'Rajdhani', sans-serif;
   text-transform: uppercase;
   font-weight: bold;
   margin-bottom: 5px;
+  font-size: 0.8rem;
 }
 
-.login-field input {
+.register-field input {
   width: 100%;
   padding: 12px;
   background: #1a1a1a;
   border: 1px solid #333;
-  border-left: 4px solid var(--cyber-blue);
+  border-left: 4px solid var(--cyber-pink);
   color: #fff;
   font-family: 'Rajdhani', sans-serif;
   outline: none;
   transition: 0.3s;
 }
 
-.login-field input:focus {
+.register-field input:focus {
   border-color: var(--cyber-yellow);
   box-shadow: 0 0 10px rgba(252, 238, 10, 0.3);
 }
 
-.login-btn {
+.register-btn {
   width: 100%;
   padding: 1rem;
   background: var(--cyber-yellow);
@@ -92,15 +82,16 @@
   text-transform: uppercase;
   transition: 0.3s;
   clip-path: polygon(0 0, 100% 0, 100% 70%, 85% 100%, 0 100%);
+  margin-top: 1rem;
 }
 
-.login-btn:hover {
+.register-btn:hover {
   background: var(--cyber-blue);
   transform: skewX(-5deg);
   box-shadow: 0 0 15px var(--cyber-blue);
 }
 
-.login-footer {
+.register-footer {
   margin-top: 1.5rem;
   text-align: center;
   font-family: 'Rajdhani', sans-serif;
@@ -108,11 +99,7 @@
   color: #666;
 }
 
-.login-footer a {
+.register-footer a {
   color: var(--cyber-pink);
   text-decoration: none;
-}
-
-.login-footer a:hover {
-  text-decoration: underline;
 }

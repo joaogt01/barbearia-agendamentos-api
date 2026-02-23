@@ -49,7 +49,7 @@ export default function Login() {
 
               <form onSubmit={handleLogin}>
                 <div className="login-field">
-                  <label>ID_USUARIO (EMAIL)</label>
+                  <label>EMAIL</label>
                   <input
                     type="email"
                     placeholder="seuemail@nightcity.com"
@@ -60,7 +60,7 @@ export default function Login() {
                 </div>
 
                 <div className="login-field">
-                  <label>CHAVE_ACESSO (SENHA)</label>
+                  <label>SENHA</label>
                   <input
                     type="password"
                     placeholder="********"
@@ -71,12 +71,12 @@ export default function Login() {
                 </div>
 
                 <button type="submit" className="login-btn">
-                  ESTABELECER_CONEXAO
+                  ENTRAR
                 </button>
               </form>
 
               <div className="login-footer">
-                AINDA NÃO É UM MERCENÁRIO? <Link to="/register">CRIAR_CONTA</Link>
+                AINDA NÃO É REGISTRADO? <Link to="/register">CRIAR CONTA</Link>
               </div>
             </div>
           </div>

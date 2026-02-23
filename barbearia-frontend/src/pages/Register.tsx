@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { api } from "../api/api";
 import { useNavigate, Link } from "react-router-dom"
+import "../styles/register.css";
 
 function Register() {
   const [nome, setNome] = useState("");
@@ -28,44 +29,55 @@ function Register() {
   }
 
   return (
-     <div className="cyber-bg">
-          <form className="cyber-card" onSubmit={handleRegister}>
-            <h1 className="cyber-title">REGISTRAR</h1>
+     <div className="register-page">
+           <div className="register-box">
+             <h1 className="register-title">Criar Perfil</h1>
 
-            <input
-              className="cyber-input"
-              type="text"
-              placeholder="NOME"
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-            />
+             <form onSubmit={handleRegister}>
+               <div className="register-grid">
+                 <div className="register-field full-width">
+                   <label>NOME</label>
+                   <input
+                     type="text"
+                     placeholder="Ex: David Martinez"
+                     onChange={(e) => setFormData({...formData, nome: e.target.value})}
+                     required
+                   />
+                 </div>
 
-            <input
-              className="cyber-input"
-              type="email"
-              placeholder="EMAIL"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+                 <div className="register-field full-width">
+                   <label>ENDEREÇO DE EMAIL</label>
+                   <input
+                     type="email"
+                     placeholder="david@edgerunners.com"
+                     onChange={(e) => setFormData({...formData, email: e.target.value})}
+                     required
+                   />
+                 </div>
 
-            <input
-              className="cyber-input"
-              type="senha"
-              placeholder="SENHA"
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
-            />
+                 <div className="register-field">
+                   <label>SENHA</label>
+                   <input
+                     type="password"
+                     placeholder="********"
+                     onChange={(e) => setFormData({...formData, password: e.target.value})}
+                     required
+                   />
+                 </div>
 
-            <button className="cyber-button" type="submit">
-              CRIAR CONTA
-            </button>
+               </div>
 
-            <div className="cyber-link">
-              <Link to="/">JÁ TENHO CONTA</Link>
-            </div>
-          </form>
-        </div>
-  );
+               <button type="submit" className="register-btn">
+                 CRIAR
+               </button>
+             </form>
+
+             <div className="register-footer">
+               JÁ ESTÁ NA REDE? <Link to="/login">FAZER LOGIN</Link>
+             </div>
+           </div>
+         </div>
+       );
 }
 
 export default Register;
