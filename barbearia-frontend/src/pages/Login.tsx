@@ -18,12 +18,12 @@ export default function Login() {
 
     try {
       const response = await api.post("/auth/login", {
-        email,
-        senha
+        email: email,
+        senha: senha
       });
 
       const {token, role}  = response.data;
-
+      localStorage.clear();
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
 

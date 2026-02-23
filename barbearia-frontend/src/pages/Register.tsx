@@ -4,28 +4,31 @@ import { useNavigate, Link } from "react-router-dom"
 import "../styles/register.css";
 
 function Register() {
-  const [nome, setNome] = useState("");
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [role, setRole] = useState("CLIENTE")
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+      nome: "",
+      email: "",
+      password: "",
+    });
 
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
 
     try {
-      await api.post("/auth/register", {
-        nome,
-        email,
-        senha,
-        role: "CLIENTE",
-      });
+      const payload = {
+          nome: formData.nome,
+          email: formData.email,
+          senha: formData.password,
+          role: "CLIENTE"
+      };
 
-      alert("Cadastro realizado!");
-      window.location.href = "/login"
-    } catch (error) {
-      console.error(error);
-      alert("Erro ao cadastrar");
-    }
+      await api.post("/auth/register", payload);
+      navigate("/login");
+      } catch (error: any) {
+            console.error(error);
+            const mensagemErro = error.response?.data?.message || "E-mail já cadastrado ou dados inválidos.";
+            alert(mensagemErro);
+          }
   }
 
   return (

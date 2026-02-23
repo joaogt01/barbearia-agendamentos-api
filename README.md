@@ -117,9 +117,10 @@ POST |	/appointments | Criar agendamento
 GET |	/appointments	| Listar agendamentos
 
 Frontend
-|	Rota |	Acesso|
- |---------|-----------|
-/login |	Público
+
+ Rota |	Acesso|
+|---------|-----------|
+ /login |	Público 
 /register	| Público
 /dashboard	| Usuário logado
 /admin	| Admin
