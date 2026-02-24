@@ -27,6 +27,19 @@ public class ServiceController {
 
     @GetMapping
     public ResponseEntity<List<ServiceResponse>> findAllActive(){
-        return ResponseEntity.ok(serviceService.findAllActive());
+        List<ServiceResponse> services = serviceService.findAllActive();
+        return ResponseEntity.ok(services);
+    }
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ServiceResponse> update(@PathVariable Long id, @Valid @RequestBody ServiceRequest request){
+        return ResponseEntity.ok(serviceService.update(id, request));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        serviceService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

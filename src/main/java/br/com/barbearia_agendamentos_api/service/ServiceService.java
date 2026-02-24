@@ -1,11 +1,11 @@
 package br.com.barbearia_agendamentos_api.service;
 
 import br.com.barbearia_agendamentos_api.domain.entity.BarberService;
-import br.com.barbearia_agendamentos_api.domain.exception.ResourceNotFoundException;
 import br.com.barbearia_agendamentos_api.domain.mapper.ServiceMapper;
 import br.com.barbearia_agendamentos_api.dto.service.ServiceRequest;
 import br.com.barbearia_agendamentos_api.dto.service.ServiceResponse;
 import br.com.barbearia_agendamentos_api.repository.ServiceRepository;
+import br.com.barbearia_agendamentos_api.domain.mapper.ServiceMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public class ServiceService {
 
     private final ServiceRepository serviceRepository;
+    private final ServiceMapper serviceMapper;
 
     public ServiceResponse create(ServiceRequest request){
         BarberService service = BarberService.builder()
@@ -27,9 +28,9 @@ public class ServiceService {
                 .ativo(true)
                 .build();
 
-        serviceRepository.save(service);
+        BarberService saved = serviceRepository.save(service);
 
-        return ServiceMapper.toResponse(service);
+        return ServiceMapper.toResponse(saved);
     }
 
     public List<ServiceResponse> findAllActive() {
@@ -37,6 +38,25 @@ public class ServiceService {
                 .stream()
                 .map(ServiceMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    public ServiceResponse update(Long id, ServiceRequest request){
+        BarberService service = serviceRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Serviço não encontrado"));
+        service.setNome(request.getNome());
+        service.setPreco(request.getPreco());
+        service.setDuracaoMinutos(request.getDuracaoMinutos());
+
+        return ServiceMapper.toResponse(serviceRepository.save(service));
+
+    }
+
+    public void delete(Long id) {
+        BarberService service = serviceRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Serviço não encontrado"));
+
+        service.setAtivo(false);
+        serviceRepository.save(service);
     }
 
 }
