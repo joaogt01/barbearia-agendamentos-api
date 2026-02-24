@@ -1,0 +1,1 @@
+ALTER TABLE barber_services ALTER COLUMN barber_id DROP NOT NULL;
