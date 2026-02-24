@@ -6,7 +6,7 @@ import lombok.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "barber_services")
+@Table(name = "services")
 @Getter
 @Setter
 @NoArgsConstructor

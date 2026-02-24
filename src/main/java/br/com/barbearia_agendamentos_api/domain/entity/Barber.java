@@ -28,7 +28,7 @@ public class Barber {
 
     @ManyToMany
     @JoinTable(
-            name = "barber_services",
+            name = "rel_barber_services",
             joinColumns = @JoinColumn(name = "barber_id"),
             inverseJoinColumns = @JoinColumn(name = "service_id")
     )
