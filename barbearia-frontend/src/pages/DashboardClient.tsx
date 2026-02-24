@@ -6,8 +6,9 @@ import "../pages/dashboardClient.css";
 interface Service {
   id: number;
   nome: string;
+  descricao: string;
   preco: number;
-  duracao: number;
+  duracaoMinutos: number;
 }
 
 interface Barber {
@@ -19,6 +20,10 @@ interface Barber {
 export default function DashboardClient() {
   const [services, setServices] = useState<Service[]>([]);
   const [barbers, setBarbers] = useState<Barber[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const [selectedService, setSelectedService] = useState<number | null>(null);
+  const [selectedBarber, setSelectedBarber] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,6 +41,16 @@ export default function DashboardClient() {
     fetchData();
   }, []);
 
+  const handleBooking = () => {
+      if (!selectedService || !selectedBarber) {
+        alert("SELECIONE UM SERVIÇO E UM BARBEIRO PARA PROSSEGUIR.");
+        return;
+      }
+
+      console.log("Iniciando agendamento:", { selectedService, selectedBarber });
+      alert("PROTOCOLO INICIADO. ESCOLHA A DATA NO PRÓXIMO MÓDULO.");
+    };
+
   return (
     <div className="client-container">
       <AdminNavbar />
@@ -50,10 +65,10 @@ export default function DashboardClient() {
         {services.length === 0 && <p>Carregando serviços...</p>}
         {services.map((service) => (
           <section key={service.id} className="selection-card">
-            <span style={{color: 'var(--cyber-blue)', fontSize: '0.6rem'}}>MODULO SERVICO_{service.id}</span>
+            <span style={{color: 'var(--cyber-blue)', fontSize: '0.6rem'}}></span>
             <h3>{service.nome}</h3>
-            <p>CRÉDITOS: ED$ {service.preco.toFixed(2)}</p>
-            <p>TEMPO: {service.duracao}min</p>
+            <p>PREÇO: R$ {service.preco.toFixed(2)}</p>
+            <p>TEMPO: {service.duracaoMinutos}min</p>
           </section>
         ))}
       </main>
@@ -63,8 +78,8 @@ export default function DashboardClient() {
         {barbers.length === 0 && <p>Buscando operativos...</p>}
         {barbers.map((barber) => (
           <section key={barber.id} className="selection-card">
-            <span style={{color: 'var(--cyber-blue)', fontSize: '0.6rem'}}>BARBER_CHIP_{barber.id}</span>
-            <h3>{barber.user?.nome || "DESCONHECIDO"}</h3>
+            <span style={{color: 'var(--cyber-blue)', fontSize: '0.6rem'}}></span>
+            <h3>{barber.userName || "DESCONHECIDO"}</h3>
             <p>STATUS: DISPONÍVEL</p>
           </section>
         ))}

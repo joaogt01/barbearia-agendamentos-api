@@ -81,3 +81,60 @@
   padding: 2rem;
   border: 1px dashed var(--cyber-pink);
 }
+
+.selection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.selection-card {
+  background: rgba(10, 10, 10, 0.9);
+  border: 1px solid #333;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.selection-card:hover {
+  border-color: var(--cyber-blue);
+  box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+}
+
+/* O Estilo da Seleção Ativa */
+.selection-card.selected {
+  border: 1px solid var(--cyber-blue);
+  background: rgba(0, 243, 255, 0.05);
+  box-shadow: 0 0 20px var(--cyber-blue);
+}
+
+.selection-card.selected::after {
+  content: "SELECIONADO";
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 0.5rem;
+  color: var(--cyber-blue);
+  font-weight: bold;
+}
+
+.btn-confirm-appointment {
+  margin-top: 3rem;
+  width: 100%;
+  padding: 1.5rem;
+  background: transparent;
+  border: 2px solid var(--cyber-pink);
+  color: var(--cyber-pink);
+  font-weight: bold;
+  letter-spacing: 3px;
+  cursor: pointer;
+  transition: 0.4s;
+}
+
+.btn-confirm-appointment:hover {
+  background: var(--cyber-pink);
+  color: #000;
+  box-shadow: 0 0 30px var(--cyber-pink);
+}

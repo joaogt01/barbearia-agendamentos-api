@@ -270,3 +270,34 @@ body {
   color: white;
   box-shadow: 0 0 15px var(--cyber-pink);
 }
+
+.admin-quick-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.action-btn-neon {
+  background: transparent;
+  border: 1px solid var(--cyber-blue);
+  color: var(--cyber-blue);
+  padding: 10px 20px;
+  text-decoration: none;
+  font-weight: bold;
+  letter-spacing: 2px;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.action-btn-neon:hover {
+  background: var(--cyber-blue);
+  color: black;
+  box-shadow: 0 0 20px var(--cyber-blue);
+}
+
+.action-btn-neon.disabled {
+  border-color: #444;
+  color: #444;
+  cursor: not-allowed;
+}

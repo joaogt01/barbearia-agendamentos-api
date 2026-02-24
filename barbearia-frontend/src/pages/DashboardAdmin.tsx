@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { api } from "../api/api";
 import "../styles/dashboard.css";
 import AdminBarberForm from "../components/AdminBarberForm";
@@ -57,6 +58,16 @@ export default function DashboardAdmin() {
 
       <header className="dashboard-header">
         <h1 className="admin-title">PAINEL DE CONTROLE</h1>
+
+        <div className="admin-quick-actions">
+                   <Link to="/admin/servicos" className="action-btn-neon">
+                     [ GERENCIAR SERVIÇOS ]
+                   </Link>
+
+                   <button className="action-btn-neon disabled" disabled>
+                     [ AGENDA COMPLETA ]
+                   </button>
+                </div>
       </header>
 
 

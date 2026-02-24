@@ -6,6 +6,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import DashboardAdmin from "./pages/DashboardAdmin";
 import DashboardClient from "./pages/DashboardClient";
 import AdminBarberForm from "./components/AdminBarberForm";
+import AdminServices from "./pages/AdminServices";
 
 
 function App() {
@@ -13,6 +14,15 @@ function App() {
          <Routes>
            <Route path="/login" element={<Login />} />
            <Route path="/register" element={<Register />} />
+
+           <Route
+                   path="/admin/servicos"
+                   element={
+                     <PrivateRoute role="ADMIN">
+                       <AdminServices />
+                     </PrivateRoute>
+                   }
+               />
 
            <Route
              path="/admin/cadastrar-barbeiro"
