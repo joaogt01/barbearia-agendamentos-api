@@ -32,23 +32,24 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, "/api/services/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/services/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/services/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/services/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/api/barbers/**").permitAll()
-
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/api/auth**").permitAll()
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/services/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/barbers/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                         .requestMatchers(HttpMethod.POST, "/api/appointments").authenticated()
-                        .requestMatchers("/api/appointments/today/**").hasAnyRole("ADMIN", "BARBER")
-                        .requestMatchers(HttpMethod.PUT, "/api/appointments/*/status").hasAnyRole("ADMIN", "BARBER")
+                        .requestMatchers("/api/appointments/today").hasAnyAuthority("ADMIN", "BARBER")
+                        .requestMatchers(HttpMethod.PUT, "/api/appointments/*/status").hasAnyAuthority("ADMIN", "BARBER")
                         .requestMatchers(HttpMethod.GET, "/api/appointments/**").authenticated()
+
+                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/services/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/services/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/services/**").hasAuthority("ADMIN")
+
+                        .requestMatchers("/api/**").authenticated()
+
                         .anyRequest().authenticated()
 
                 )
@@ -62,8 +63,9 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
         configuration.setAllowCredentials(true);
+        configuration.setExposedHeaders(Arrays.asList("Authorization"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
