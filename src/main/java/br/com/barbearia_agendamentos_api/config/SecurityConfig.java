@@ -1,19 +1,14 @@
 package br.com.barbearia_agendamentos_api.config;
 
-import br.com.barbearia_agendamentos_api.security.CustomUserDetailsService;
 import br.com.barbearia_agendamentos_api.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -49,6 +44,11 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/**").authenticated()
+
+                        .requestMatchers(HttpMethod.POST, "/api/appointments").authenticated()
+                        .requestMatchers("/api/appointments/today/**").hasAnyRole("ADMIN", "BARBER")
+                        .requestMatchers(HttpMethod.PUT, "/api/appointments/**/status").hasAnyRole("ADMIN", "BARBER")
+                        .requestMatchers(HttpMethod.GET, "/api/appointments/**").authenticated()
                         .anyRequest().authenticated()
 
                 )

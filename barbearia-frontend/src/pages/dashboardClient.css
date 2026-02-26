@@ -103,7 +103,6 @@
   box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
 }
 
-/* O Estilo da Seleção Ativa */
 .selection-card.selected {
   border: 1px solid var(--cyber-blue);
   background: rgba(0, 243, 255, 0.05);
@@ -137,4 +136,56 @@
   background: var(--cyber-pink);
   color: #000;
   box-shadow: 0 0 30px var(--cyber-pink);
+}
+
+.selection-card.selected {
+  border-color: #00f3ff;
+  background: rgba(0, 243, 255, 0.1);
+  box-shadow: 0 0 15px #00f3ff;
+  transform: translateY(-5px);
+}
+
+.card-tag {
+  font-size: 0.6rem;
+  color: #00f3ff;
+  text-transform: uppercase;
+}
+
+.date-input-wrapper {
+  margin: 20px 0;
+  max-width: 400px;
+}
+
+.cyber-input {
+  width: 100%;
+  padding: 12px;
+  background: #000;
+  border: 1px solid #333;
+  color: #00f3ff;
+  font-family: 'Courier New', monospace;
+  font-size: 1.1rem;
+}
+
+.cyber-input:focus {
+  border-color: #00f3ff;
+  outline: none;
+}
+
+.btn-confirm-appointment {
+  width: 100%;
+  padding: 20px;
+  background: transparent;
+  border: 2px solid #ff0055;
+  color: #ff0055;
+  font-weight: bold;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-top: 30px;
+}
+
+.btn-confirm-appointment:hover {
+  background: #ff0055;
+  color: #000;
+  box-shadow: 0 0 20px #ff0055;
 }

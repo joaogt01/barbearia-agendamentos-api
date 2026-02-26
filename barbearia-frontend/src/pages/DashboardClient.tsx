@@ -24,6 +24,7 @@ export default function DashboardClient() {
 
   const [selectedService, setSelectedService] = useState<number | null>(null);
   const [selectedBarber, setSelectedBarber] = useState<number | null>(null);
+  const [appointmentDate, setAppointmentDate] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,14 +43,33 @@ export default function DashboardClient() {
   }, []);
 
   const handleBooking = () => {
-      if (!selectedService || !selectedBarber) {
-        alert("SELECIONE UM SERVIÇO E UM BARBEIRO PARA PROSSEGUIR.");
+      if (!selectedService || !selectedBarber || !appointmentDate) {
+        alert("SELECIONE UM SERVIÇO UM BARBEIRO E A DATA PARA PROSSEGUIR.");
         return;
       }
+      try {
+          const payload = {
+              barberId: selectedBarber,
+              serviceId: selectedService,
+              time: appointmentDate
+            };
+          await api.post("/api/appointments", payload);
 
-      console.log("Iniciando agendamento:", { selectedService, selectedBarber });
-      alert("PROTOCOLO INICIADO. ESCOLHA A DATA NO PRÓXIMO MÓDULO.");
-    };
+            alert("AGENDAMENTO REALIZADO COM SUCESSO!");
+
+
+            setSelectedService(null);
+            setSelectedBarber(null);
+            setAppointmentDate("");
+
+          } catch (err: any) {
+            console.error("Erro ao agendar:", err);
+            const msg = err.response?.data?.message || "Horário indisponível ou erro no servidor.";
+            alert("FALHA NO AGENDAMENTO: " + msg);
+          }
+        };
+
+        if (loading) return <div className="loading">CARREGANDO SISTEMA...</div>;
 
   return (
     <div className="client-container">
@@ -65,10 +85,14 @@ export default function DashboardClient() {
         {services.length === 0 && <p>Carregando serviços...</p>}
         {services.map((service) => (
           <section key={service.id} className="selection-card">
-            <span style={{color: 'var(--cyber-blue)', fontSize: '0.6rem'}}></span>
-            <h3>{service.nome}</h3>
-            <p>PREÇO: R$ {service.preco.toFixed(2)}</p>
-            <p>TEMPO: {service.duracaoMinutos}min</p>
+            key={service.id}
+              className={`selection-card ${selectedService === service.id ? "selected" : ""}`}
+              onClick={() => setSelectedService(service.id)}
+              >
+              <span className="card-tag">MOD_SERV_{service.id}</span>
+              <h3>{service.nome}</h3>
+              <p className="price">R$ {service.preco.toFixed(2)}</p>
+              <p className="time"> {service.duracaoMinutos} min</p>
           </section>
         ))}
       </main>
@@ -85,7 +109,18 @@ export default function DashboardClient() {
         ))}
       </main>
 
-      <button className="btn-confirm-appointment">
+      <h2 className="section-subtitle" style={{marginTop: '2rem'}}>DEFINIR CRONOGRAMA</h2>
+            <div className="date-input-wrapper">
+              <input
+                type="datetime-local"
+                className="cyber-input"
+                value={appointmentDate}
+                onChange={(e) => setAppointmentDate(e.target.value)}
+              />
+            </div>
+
+
+      <button className="btn-confirm-appointment" onClick={handleBooking}>
         EXECUTAR AGENDAMENTO
       </button>
     </div>

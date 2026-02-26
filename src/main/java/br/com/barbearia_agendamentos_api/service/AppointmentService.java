@@ -31,7 +31,6 @@ public class AppointmentService {
 
     @Transactional
     public AppointmentResponse create(AppointmentRequest request) {
-        // 1. Buscar Entidades
         var barber = barberRepository.findById(request.getBarberId())
                 .orElseThrow(() -> new RuntimeException("Operativo (Barbeiro) não encontrado no sistema."));
 
