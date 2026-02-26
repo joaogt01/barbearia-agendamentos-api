@@ -195,7 +195,6 @@ body {
   box-shadow: 0 4px 15px rgba(252, 238, 10, 0.2);
 }
 
-/* Detalhe decorativo no canto da Navbar */
 .admin-navbar::after {
   content: "ACCESS_GRANTED";
   position: absolute;
@@ -240,7 +239,6 @@ body {
   text-shadow: 0 0 8px var(--cyber-yellow);
 }
 
-/* Efeito de "ponteiro" no hover */
 .nav-link::before {
   content: ">";
   position: absolute;

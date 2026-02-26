@@ -21,10 +21,16 @@ export default function DashboardClient() {
   const [services, setServices] = useState<Service[]>([]);
   const [barbers, setBarbers] = useState<Barber[]>([]);
   const [loading, setLoading] = useState(true);
+  const [occupiedSlots, setOccupiedSlots] = useState<string[]>([]);
 
   const [selectedService, setSelectedService] = useState<number | null>(null);
   const [selectedBarber, setSelectedBarber] = useState<number | null>(null);
   const [appointmentDate, setAppointmentDate] = useState("");
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+
+  const workSlots = [
+      "09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"
+    ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,30 +52,52 @@ export default function DashboardClient() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+      const fetchSchedule = async () => {
+        if (!selectedBarber) {
+          setOccupiedSlots([]);
+          return;
+        }
+        try {
+          const res = await api.get(`/api/appointments/barber/${selectedBarber}`);
+          const occupied = res.data.map((app: any) => {
+              const date = Array.isArray(app.time)
+                  ? new Date(app.time[0], app.time[1]-1, app.time[2], app.time[3], app.time[4])
+                  : new Date(app.time);
+              return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+          });
+          setOccupiedSlots(occupied);
+        } catch (err) {
+          console.error("Erro ao carregar agenda:", err);
+        }
+      };
+      fetchSchedule();
+    }, [selectedBarber]);
+
   const handleBooking = async () => {
-      if (!selectedService || !selectedBarber || !appointmentDate) {
+      if (!selectedService || !selectedBarber || !selectedTime) {
         alert("SELECIONE UM SERVIÇO UM BARBEIRO E A DATA PARA PROSSEGUIR.");
         return;
       }
       try {
+          const today = new Date().toISOString().split('T')[0];
           const payload = {
               barberId: selectedBarber,
               serviceId: selectedService,
-              time: appointmentDate
+              time: `${today}T${selectedTime}:00`
             };
           await api.post("/api/appointments", payload);
 
-            alert("AGENDAMENTO REALIZADO COM SUCESSO!");
+          alert("AGENDAMENTO REALIZADO COM SUCESSO!");
 
-
-            setSelectedService(null);
-            setSelectedBarber(null);
-            setAppointmentDate("");
-
+          setSelectedTime(null);
+          const res = await api.get(`/api/appointments/barber/${selectedBarber}`);
+          setOccupiedSlots(res.data.map((app: any) => {
+              const date = new Date(app.time);
+              return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            }));
           } catch (err: any) {
-            console.error("Erro ao agendar:", err);
-            const msg = err.response?.data?.message || "Horário indisponível ou erro no servidor.";
-            alert("FALHA NO AGENDAMENTO: " + msg);
+            alert("ERRO: " + (err.response?.data?.message || "Falha ao agendar"));
           } finally {
               setLoading(false);
           }
@@ -116,16 +144,27 @@ export default function DashboardClient() {
         ))}
       </main>
 
-      <h2 className="section-subtitle" style={{marginTop: '2rem' }}>DEFINIR CRONOGRAMA</h2>
-      <div className="date-input-wrapper">
-        <input
-          type="datetime-local"
-          className="cyber-input"
-          value={appointmentDate}
-          onChange={(e) => setAppointmentDate(e.target.value)}
-        />
-      </div>
-
+      {selectedBarber && (
+        <>
+          <h2 className="section-subtitle">3. HORÁRIOS DISPONÍVEIS PARA ESSE BARBEIRO HOJE</h2>
+          <div className="time-grid">
+            {workSlots.map(time => {
+              const isOccupied = occupiedSlots.includes(time);
+              return (
+                <button
+                  key={time}
+                  disabled={isOccupied}
+                  className={`time-slot ${isOccupied ? 'occupied' : ''} ${selectedTime === time ? 'active' : ''}`}
+                  onClick={() => setSelectedTime(time)}
+                >
+                  {time}
+                  <span className="slot-status">{isOccupied ? 'OCUPADO' : 'LIVRE'}</span>
+                </button>
+              );
+            })}
+          </div>
+        </>
+      )}
 
       <button className="btn-confirm-appointment" onClick={handleBooking}>
         EXECUTAR AGENDAMENTO

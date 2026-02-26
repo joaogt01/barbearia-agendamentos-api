@@ -252,3 +252,64 @@
   padding: 5px 10px;
   cursor: pointer;
 }
+
+.schedule-viewer {
+  margin: 20px 0;
+  padding: 15px;
+  background: rgba(255, 0, 60, 0.05);
+  border: 1px solid #ff003c;
+}
+
+.schedule-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px;
+  border-bottom: 1px border-bottom: 1px solid rgba(255, 0, 60, 0.2);
+  font-family: 'monospace';
+  color: #ff003c;
+}
+
+.time-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.time-slot {
+  background: #111;
+  border: 1px solid #00f3ff;
+  color: #fff;
+  padding: 15px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: 0.3s;
+}
+
+.time-slot:hover:not(.occupied) {
+  background: rgba(0, 243, 255, 0.2);
+}
+
+.time-slot.active {
+  background: #00f3ff;
+  color: #000;
+  box-shadow: 0 0 15px #00f3ff;
+}
+
+.time-slot.occupied {
+  border-color: #ff003c;
+  color: #666;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.slot-status {
+  font-size: 0.6rem;
+  margin-top: 5px;
+}
+
+.time-slot.occupied .slot-status {
+  color: #ff003c;
+}
