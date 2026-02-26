@@ -2,7 +2,9 @@ package br.com.barbearia_agendamentos_api.domain.mapper;
 
 import br.com.barbearia_agendamentos_api.domain.entity.Appointment;
 import br.com.barbearia_agendamentos_api.dto.appointment.AppointmentResponse;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AppointmentMapper {
 
     public AppointmentResponse toResponse(Appointment entity) {

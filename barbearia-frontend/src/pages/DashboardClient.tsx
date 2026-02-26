@@ -29,20 +29,24 @@ export default function DashboardClient() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+          console.log("Iniciando busca de dados no Backend...");
         const [servicesRes, barbersRes] = await Promise.all([
           api.get("/api/services"),
           api.get("/api/barbers")
         ]);
         setServices(servicesRes.data);
         setBarbers(barbersRes.data.filter((b: Barber) => b.ativo));
+        console.log("Dados carregados com sucesso!");
       } catch (err) {
         console.error("Erro ao carregar dados:", err);
+      } finally {
+          setLoading(false);
       }
     };
     fetchData();
   }, []);
 
-  const handleBooking = () => {
+  const handleBooking = async () => {
       if (!selectedService || !selectedBarber || !appointmentDate) {
         alert("SELECIONE UM SERVIÇO UM BARBEIRO E A DATA PARA PROSSEGUIR.");
         return;
@@ -66,6 +70,8 @@ export default function DashboardClient() {
             console.error("Erro ao agendar:", err);
             const msg = err.response?.data?.message || "Horário indisponível ou erro no servidor.";
             alert("FALHA NO AGENDAMENTO: " + msg);
+          } finally {
+              setLoading(false);
           }
         };
 
@@ -84,11 +90,11 @@ export default function DashboardClient() {
       <main className="selection-grid">
         {services.length === 0 && <p>Carregando serviços...</p>}
         {services.map((service) => (
-          <section key={service.id} className="selection-card">
+          <section
             key={service.id}
-              className={`selection-card ${selectedService === service.id ? "selected" : ""}`}
-              onClick={() => setSelectedService(service.id)}
-              >
+            className={`selection-card ${selectedService === service.id ? "selected" : ""}`}
+            onClick={() => setSelectedService(service.id)}
+          >
               <span className="card-tag">MOD_SERV_{service.id}</span>
               <h3>{service.nome}</h3>
               <p className="price">R$ {service.preco.toFixed(2)}</p>
@@ -101,7 +107,8 @@ export default function DashboardClient() {
       <main className="selection-grid">
         {barbers.length === 0 && <p>Buscando operativos...</p>}
         {barbers.map((barber) => (
-          <section key={barber.id} className="selection-card">
+          <section key={barber.id} className={`selection-card ${selectedBarber === barber.id ? "selected" : ""}`}
+             onClick={() => setSelectedBarber(barber.id)}>
             <span style={{color: 'var(--cyber-blue)', fontSize: '0.6rem'}}></span>
             <h3>{barber.userName || "DESCONHECIDO"}</h3>
             <p>STATUS: DISPONÍVEL</p>
@@ -109,15 +116,15 @@ export default function DashboardClient() {
         ))}
       </main>
 
-      <h2 className="section-subtitle" style={{marginTop: '2rem'}}>DEFINIR CRONOGRAMA</h2>
-            <div className="date-input-wrapper">
-              <input
-                type="datetime-local"
-                className="cyber-input"
-                value={appointmentDate}
-                onChange={(e) => setAppointmentDate(e.target.value)}
-              />
-            </div>
+      <h2 className="section-subtitle" style={{marginTop: '2rem' }}>DEFINIR CRONOGRAMA</h2>
+      <div className="date-input-wrapper">
+        <input
+          type="datetime-local"
+          className="cyber-input"
+          value={appointmentDate}
+          onChange={(e) => setAppointmentDate(e.target.value)}
+        />
+      </div>
 
 
       <button className="btn-confirm-appointment" onClick={handleBooking}>
