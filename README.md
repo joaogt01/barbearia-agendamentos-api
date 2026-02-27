@@ -21,7 +21,6 @@ Permite que clientes agendem serviços, e administradores gerenciem horários, s
 - Vite
 - TypeScript
 - Axios
-- React Router DOM
 
 ---
 
