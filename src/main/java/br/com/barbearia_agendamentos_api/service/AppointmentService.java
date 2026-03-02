@@ -19,6 +19,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class AppointmentService {
@@ -30,12 +32,12 @@ public class AppointmentService {
     private final AppointmentMapper mapper;
 
     @Transactional
-    public AppointmentResponse create(AppointmentRequest request) {
+    public AppointmentResponse create(AppointmentRequest request, User user) {
         var barber = barberRepository.findById(request.getBarberId())
-                .orElseThrow(() -> new RuntimeException("Operativo (Barbeiro) não encontrado no sistema."));
+                .orElseThrow(() -> new RuntimeException("Barbeiro não encontrado."));
 
         var service = serviceRepository.findById(request.getServiceId())
-                .orElseThrow(() -> new RuntimeException("Módulo de Serviço não identificado."));
+                .orElseThrow(() -> new RuntimeException("Serviço não identificado."));
 
         var client = getAuthenticatedUser();
 
@@ -103,6 +105,28 @@ public class AppointmentService {
                 .getContext().getAuthentication().getName();
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuário autenticado não encontrado."));
+    }
+
+    @Transactional(readOnly = true)
+    public List<AppointmentResponse> findMonthlyAppointmentsByBarber(String email) {
+        return repository.findMonthlyByBarberEmail(email)
+                .stream()
+                .map(mapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<AppointmentResponse> findTodayAppointmentsByBarber(String email) {
+        return repository.findTodayByBarberEmail(email)
+                .stream()
+                .map(mapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    public AppointmentResponse findById(Long id) {
+        Appointment entity = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Agendamento não encontrado"));
+        return mapper.toResponse(entity);
     }
 }
 

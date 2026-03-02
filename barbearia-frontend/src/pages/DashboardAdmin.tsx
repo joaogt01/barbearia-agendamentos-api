@@ -63,10 +63,6 @@ export default function DashboardAdmin() {
                    <Link to="/admin/servicos" className="action-btn-neon">
                      [ GERENCIAR SERVIÇOS ]
                    </Link>
-
-                   <button className="action-btn-neon disabled" disabled>
-                     [ AGENDA COMPLETA ]
-                   </button>
                 </div>
       </header>
 

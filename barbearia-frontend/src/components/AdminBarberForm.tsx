@@ -1,12 +1,30 @@
 import { useState, useEffect } from "react";
 import { api } from "../api/api";
+import "../styles/dashboard.css";
 
-export default function AdminBarberForm({ onBarberCreated }: { onBarberCreated: () => void }) {
+interface User {
+  id: number;
+  nome: string;
+  email: string;
+}
+
+interface Service {
+  id: number;
+  nome: string;
+  preco: number;
+}
+
+interface AdminBarberFormProps {
+  onBarberCreated?: () => void;
+}
+
+export default function AdminBarberForm({ onBarberCreated }: AdminBarberFormProps) {
   const [availableUsers, setAvailableUsers] = useState([]);
   const [availableServices, setAvailableServices] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState("");
   const [selectedServices, setSelectedServices] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("")
 
   useEffect(() => {
 
@@ -47,6 +65,8 @@ export default function AdminBarberForm({ onBarberCreated }: { onBarberCreated: 
 
       setSelectedUserId("");
       setSelectedServices([]);
+      fetchData();
+      if (onBarberCreated) onBarberCreated();
     } catch (err: any) {
       alert("Erro ao salvar: " + err.response?.data?.message);
     } finally {
@@ -67,7 +87,7 @@ export default function AdminBarberForm({ onBarberCreated }: { onBarberCreated: 
             onChange={(e) => setSelectedUserId(e.target.value)}
             required
           >
-            <option value="">-- Clique para selecionar --</option>
+            <option value=""> Clique para selecionar </option>
             {availableUsers.map((user: any) => (
               <option key={user.id} value={user.id}>
                 {user.nome} ({user.email})

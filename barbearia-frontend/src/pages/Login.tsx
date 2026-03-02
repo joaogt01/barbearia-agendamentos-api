@@ -17,29 +17,37 @@ export default function Login() {
     setError("")
 
     try {
-      const response = await api.post("/auth/login", {
-        email: email,
-        senha: senha
-      });
+     const response = await api.post("/auth/login", {
+         email: email,
+         senha: senha
+       });
 
-      const {token, role}  = response.data;
-      localStorage.clear();
-      localStorage.setItem("token", token);
-      localStorage.setItem("role", role);
+       const { token, role } = response.data;
 
-      api.defaults.headers.Authorization = `Bearer ${token}`;
+       console.log("Resposta do servidor:", response.data);
 
-      if (role === "ADMIN") {
-            navigate("/dashboard-admin");
-          } else if (role === "CLIENTE") {
-            navigate("/dashboard-client");
-          }
+       localStorage.clear();
+       localStorage.setItem("token", token);
+       localStorage.setItem("role", role);
 
-    } catch (err: any) {
-        setError("Credenciais inválidas")
-      } finally {
-          setLoading(false)
-      }
+       api.defaults.headers.Authorization = `Bearer ${token}`;
+
+       const normalizedRole = role ? role.toUpperCase() : "";
+
+       if (normalizedRole === "ADMIN") {
+         navigate("/dashboard-admin");
+       } else if (normalizedRole === "BARBEIRO" || normalizedRole === "ROLE_BARBEIRO") {
+         navigate("/dashboard-barber");
+       } else if (normalizedRole === "CLIENTE" || normalizedRole === "ROLE_CLIENTE") {
+         navigate("/dashboard-client");
+       } else {
+         console.error("Role não reconhecida ou ausente:", role);
+         setError("Erro de permissão: Perfil não identificado.");
+       }
+
+     } catch (err: any) {
+       setError("Credenciais inválidas ou erro no servidor");
+     }
   }
 
   return (

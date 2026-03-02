@@ -15,8 +15,8 @@ public class AppointmentMapper {
                 .barberName(entity.getBarber().getUser().getNome())
                 .serviceName(entity.getService().getNome())
                 .preco(entity.getService().getPreco())
-                .dateTime(entity.getDateTime().toString())
-                .status(entity.getStatus().toString())
+                .dateTime(entity.getDateTime())
+                .status(entity.getStatus().name())
                 .build();
     }
 

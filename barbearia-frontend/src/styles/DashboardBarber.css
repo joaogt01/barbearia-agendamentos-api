@@ -1,194 +1,154 @@
-.dashboard-container {
-  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap');
+
+:root {
+  --cyber-yellow: #fcee0a;
+  --cyber-blue: #00f0ff;
+  --cyber-pink: #ff003c;
+  --bg-black: #050505;
+  --card-bg: rgba(5, 5, 10, 0.95);
+}
+
+.barber-page {
   min-height: 100vh;
-  padding: 40px;
+  background: transparent;
+  padding: 40px 20px;
   color: #fff;
-  font-family: "Orbitron", sans-serif;
+  font-family: 'Rajdhani', sans-serif;
+  background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+  background-size: 100% 4px;
 }
 
-h1 {
+.barber-header {
   text-align: center;
-  font-size: 3rem;
-  color: #ff3cac;
-  text-shadow: 0 0 10px #ff3cac, 0 0 20px #ff3cac;
-  margin-bottom: 40px;
-}
-
-.loading, .empty {
-  text-align: center;
-  font-size: 1.5rem;
-  color: #f0f0f0;
-}
-
-.appointments-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
-}
-
-.appointment-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 2px solid #ff3cac;
-  border-radius: 12px;
-  padding: 20px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.appointment-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 20px #ff3cac;
-}
-
-.appointment-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.status {
-  padding: 5px 10px;
-  border-radius: 6px;
-  font-weight: bold;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-}
-
-.status.pending {
-  background: #f39c12;
-  color: #000;
-}
-
-.status.confirmed {
-  background: #3498db;
-  color: #fff;
-}
-
-.status.done {
-  background: #2ecc71;
-  color: #fff;
-}
-
-.buttons {
-  margin-top: 15px;
-  display: flex;
-  gap: 10px;
-}
-
-button {
-  flex: 1;
-  padding: 8px 12px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  background: #ff3cac;
-  color: #fff;
-  font-weight: bold;
-  transition: background 0.2s ease, transform 0.2s ease;
-}
-
-button:hover {
-  background: #f5008c;
-  transform: scale(1.05);
-}
-
-.barber-dashboard-container {
-  padding: 40px;
-  min-height: 100vh;
-  background-color: #050505;
-  color: #fff;
-  font-family: 'Segoe UI', Roboto, sans-serif;
-}
-
-.barber-dashboard-header h1 {
-  color: #00f3ff;
-  letter-spacing: 4px;
-  border-left: 5px solid #ff003c;
-  padding-left: 15px;
-  margin-bottom: 5px;
-}
-
-.appointments-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 25px;
-  margin-top: 30px;
-}
-
-
-.appointment-card {
-  background: #111;
-  border: 1px solid #333;
-  padding: 20px;
+  margin-bottom: 3rem;
   position: relative;
-  overflow: hidden;
-  clip-path: polygon(0 0, 100% 0, 100% 85%, 90% 100%, 0 100%);
-  transition: all 0.3s ease;
 }
 
-.appointment-card:hover {
-  border-color: #00f3ff;
-  transform: scale(1.02);
-  box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
-}
-
-.appointment-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.id-tag {
-  font-size: 0.7rem;
-  color: #666;
-  font-family: 'Courier New', Courier, monospace;
-}
-
-.status-badge {
-  font-size: 0.7rem;
-  padding: 4px 8px;
-  font-weight: bold;
-}
-
-.status-badge.pending { background: #ffaa00; color: #000; }
-.status-badge.confirmed { background: #00f3ff; color: #000; }
-.status-badge.done { background: #39ff14; color: #000; }
-
-.card-main-info h2 {
-  font-size: 1.4rem;
+.barber-title {
+  font-family: 'Orbitron', sans-serif;
+  color: var(--cyber-yellow);
   text-transform: uppercase;
+  letter-spacing: 5px;
+  font-size: 2.2rem;
   margin-bottom: 10px;
 }
 
-.time-display {
-  margin-top: 15px;
-  font-size: 1.1rem;
-  color: #00f3ff;
-  background: rgba(0, 243, 255, 0.05);
-  padding: 10px;
-  text-align: center;
+.barber-subtitle {
+  color: var(--cyber-blue);
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 2px;
+  font-size: 0.8rem;
 }
 
-.btn-action {
-  width: 100%;
-  margin-top: 20px;
-  padding: 12px;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
-  text-transform: uppercase;
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  max-width: 1000px;
+  margin: 0 auto 3rem;
+}
+
+.metric-box {
+  background: var(--card-bg);
+  border: 1px solid var(--cyber-blue);
+  padding: 2rem;
+  position: relative;
+  clip-path: polygon(0 0, 100% 0, 100% 80%, 90% 100%, 0 100%);
   transition: 0.3s;
 }
 
-.btn-action.confirm { background: #00f3ff; color: #000; }
-.btn-action.done { background: #39ff14; color: #000; }
-.btn-action:hover { filter: brightness(1.2); letter-spacing: 2px; }
+.metric-box:hover {
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+  transform: translateY(-5px);
+}
 
-.completed-msg {
-  text-align: center;
-  margin-top: 20px;
-  color: #39ff14;
+.metric-box.money {
+  border-color: var(--cyber-yellow);
+}
+
+.metric-label {
+  display: block;
+  color: var(--cyber-blue);
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  margin-bottom: 10px;
+}
+
+.metric-box.money .metric-label {
+  color: var(--cyber-yellow);
+}
+
+.metric-value {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2rem;
+  color: #fff;
+}
+
+.history-box {
+  max-width: 1000px;
+  margin: 0 auto;
+  background: var(--card-bg);
+  border: 1px solid #333;
+  border-left: 4px solid var(--cyber-pink);
+  padding: 2rem;
+  clip-path: polygon(0 0, 100% 0, 100% 95%, 98% 100%, 0 100%);
+}
+
+.history-title {
+  font-family: 'Orbitron', sans-serif;
+  color: var(--cyber-pink);
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+
+.cyber-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.cyber-table th {
+  text-align: left;
+  color: var(--cyber-blue);
+  text-transform: uppercase;
   font-size: 0.8rem;
-  border: 1px dashed #39ff14;
   padding: 10px;
+  border-bottom: 1px solid #333;
+}
+
+.cyber-table td {
+  padding: 15px 10px;
+  border-bottom: 1px solid #1a1a1a;
+  color: #ccc;
+}
+
+.cyber-table tr:hover {
+  background: rgba(255, 0, 60, 0.05);
+}
+
+.status-concluido { color: var(--cyber-blue); font-weight: bold; }
+.status-pendente { color: var(--cyber-yellow); }
+
+
+.back-btn {
+  display: block;
+  margin: 2rem auto;
+  padding: 1rem 3rem;
+  background: var(--cyber-yellow);
+  color: #000;
+  border: none;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+  clip-path: polygon(0 0, 100% 0, 100% 70%, 85% 100%, 0 100%);
+  transition: 0.3s;
+}
+
+.back-btn:hover {
+  background: var(--cyber-blue);
+  box-shadow: 0 0 15px var(--cyber-blue);
 }

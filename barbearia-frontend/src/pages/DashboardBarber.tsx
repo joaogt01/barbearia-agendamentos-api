@@ -1,120 +1,105 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./DashboardBarber.css";
+import { api } from "../api/api";
+import "../styles/DashboardBarber.css";
 
-interface Appointment = {
+interface Appointment {
   id: number;
   clientName: string;
   serviceName: string;
-  time: string | number[];
-  status: "PENDING" | "CONFIRMED" | "DONE";
-};
+  preco: BigDecimal;
+  dateTime: string;
+  status: string;
+}
 
 export function DashboardBarber() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
-
-  const fetchAppointments = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get<Appointment[]>(
-        "http://localhost:8080/api/appointments/today",
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      setAppointments(response.data);
-    } catch (err) {
-      console.error("Erro ao carregar agendamentos:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const navigate = useNavigate();
 
   useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const response = await api.get("/api/appointments/my-month");
+        setAppointments(response.data);
+      } catch (err) {
+        console.error("Erro ao carregar dados do mês: ", err);
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchAppointments();
   }, []);
 
-  const dateObj = Array.isArray(time)
-        ? new Date(time[0], time[1] - 1, time[2], time[3], time[4])
-        : new Date(time);
+  const totalAgendamentos = appointments.length;
 
-      return isNaN(dateObj.getTime())
-        ? "DATA INVÁLIDA"
-        : dateObj.toLocaleString('pt-BR', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' });
-    };
+  const totalArrecadado = appointments
+    .filter(apt => apt.status === "CONCLUIDO" || apt.status === "PAGO")
+    .reduce((sum, apt) => sum + apt.price, 0);
 
-  const updateStatus = async (id: number, status: Appointment["status"]) => {
-    try {
-      await axios.put(
-        `http://localhost:8080/api/appointments/${id}/status`,
-        { status },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      setAppointments((prev) =>
-        prev.map((a) => (a.id === id ? { ...a, status } : a))
-      );
-    } catch (err) {
-      console.error("Erro ao atualizar status:", err);
-    }
-  };
+  if (loading) return <div className="cyber-loading">CARREGANDO DADOS...</div>;
 
   return (
-    <div className="barber-dashboard-container">
-      <header className="barber-dashboard-header">
-          <h1>OPERATIVE TERMINAL</h1>
-          <p>ORDENS DE SERVIÇO AGENDADAS PARA HOJE</p>
-      </header>
+    <div className="barber-page">
+        <header style={{ textAlign: 'center' }}>
+          <h1 className="barber-title">RELATÓRIO DO BARBEIRO</h1>
+          <p className="barber-subtitle">RELATÓRIO MENSAL DE DESEMPENHO</p>
+        </header>
 
-      {loading ? (
-          <div className="cyber-loading">SCANNING DATABASE...</div>
-          ) : appointments.length === 0 ? (
-            <div className="empty-state">NENHUMA ATIVIDADE DETECTADA PARA HOJE.</div>
-          ) : (
-            <div className="appointments-grid">
-              {appointments.map((a) => (
-                <div key={a.id} className={`appointment-card status-${a.status.toLowerCase()}`}>
-                  <div className="card-glitch-effect"></div>
-                  <div className="appointment-header">
-                    <span className="id-tag">#ID_{a.id}</span>
-                    <span className={`status-badge ${a.status.toLowerCase()}`}>
-                      {a.status}
-                    </span>
-                  </div>
-
-                  <div className="card-main-info">
-                    <h2>{a.clientName}</h2>
-                    <p className="service-text">MISSÃO: <strong>{a.serviceName}</strong></p>
-                    <div className="time-display">
-                      <span className="icon">🕒</span> {formatDateTime(a.time)}
-                    </div>
-                  </div>
-
-                  <div className="card-actions">
-                    {a.status === "PENDING" && (
-                      <button className="btn-action confirm" onClick={() => updateStatus(a.id, "CONFIRMED")}>
-                        CONFIRMAR INÍCIO
-                      </button>
-                    )}
-                    {a.status === "CONFIRMED" && (
-                      <button className="btn-action done" onClick={() => updateStatus(a.id, "DONE")}>
-                        FINALIZAR SERVIÇO
-                      </button>
-                    )}
-                    {a.status === "DONE" && (
-                       <div className="completed-msg">SERVIÇO CONCLUÍDO</div>
-                    )}
-                  </div>
-                </div>
-              ))}
+        <div className="metrics-grid">
+          <div className="metric-box">
+            <span className="metric-label">AGENDAMENTOS NO MÊS</span>
+            <span className="metric-value">{totalAgendamentos}</span>
           </div>
+
+          <div className="metric-box money">
+            <span className="metric-label">ARRECADAÇÃO TOTAL</span>
+            <span className="metric-value">
+              {totalArrecadado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+            </span>
+          </div>
+        </div>
+
+        <section className="history-box">
+          <h2 className="history-title">HISTÓRICO RECENTE</h2>
+          {appointments.length === 0 ? (
+            <p className="empty-msg">[ SISTEMA: NENHUM DADO ENCONTRADO NO PERÍODO ]</p>
+          ) : (
+            <table className="cyber-table">
+              <thead>
+                <tr>
+                  <th>CLIENTE</th>
+                  <th>SERVIÇO</th>
+                  <th>DATA</th>
+                  <th>VALOR</th>
+                  <th>STATUS</th>
+                </tr>
+              </thead>
+              <tbody>
+                {appointments.map((apt) => (
+                  <tr key={apt.id}>
+                    <td style={{ color: '#fff', fontWeight: 'bold' }}>
+                      {apt.clientName?.toUpperCase()}
+                    </td>
+                    <td>{apt.serviceName}</td>
+                    <td>{new Date(apt.dateTime).toLocaleDateString('pt-BR')}</td>
+                    <td style={{ color: '#39ff14' }}>R$ {apt.price.toFixed(2)}</td>
+                    <td>
+                      <span className={`status-${apt.status.toLowerCase()}`}>
+                        {apt.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           )}
+        </section>
+
+        <button className="back-btn" onClick={() => window.history.back()}>
+          RETORNAR AO SISTEMA
+        </button>
       </div>
-  );
+    );
 }

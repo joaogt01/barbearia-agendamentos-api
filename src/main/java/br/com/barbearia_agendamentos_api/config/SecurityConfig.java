@@ -32,21 +32,23 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/api/auth**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/services/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/barbers/**").permitAll()
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                         .requestMatchers(HttpMethod.POST, "/api/appointments").authenticated()
-                        .requestMatchers("/api/appointments/today").hasAnyAuthority("ADMIN", "BARBER")
-                        .requestMatchers(HttpMethod.PUT, "/api/appointments/*/status").hasAnyAuthority("ADMIN", "BARBER")
+                        .requestMatchers("/api/appointments/today").hasAnyAuthority("ADMIN", "BARBEIRO", "ROLE_BARBEIRO", "ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/appointments/*/status").hasAnyAuthority("ADMIN", "BARBEIRO", "ROLE_BARBEIRO", "ROLE_ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/appointments/**").authenticated()
 
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/services/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/services/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/services/**").hasAuthority("ADMIN")
+
+                        .requestMatchers("/api/appointments/my-month").hasAnyRole("BARBEIRO", "ADMIN")
 
                         .requestMatchers("/api/**").authenticated()
 

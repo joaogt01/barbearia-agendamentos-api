@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 
 type PrivateRouteProps = {
     children: ReactNode;
-    role?: "ADMIN" | "CLIENT";
+    role?: "ADMIN" | "CLIENTE" | "BARBEIRO";
     };
 
 export default function PrivateRoute({ children, role }: PrivateRouteProps) {

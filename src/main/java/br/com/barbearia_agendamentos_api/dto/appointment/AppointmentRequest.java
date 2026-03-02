@@ -15,6 +15,6 @@ public class AppointmentRequest {
     private Long clientId;
     private Long serviceId;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm[:ss]")
     private LocalDateTime time;
 }

@@ -11,11 +11,11 @@
 }
 
 body {
-  background-color: var(--bg-black);
+  background-color: transparent;
   background-image:
     linear-gradient(rgba(252, 238, 10, 0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(252, 238, 10, 0.05) 1px, transparent 1px);
-  background-size: 30px 30px; /* Efeito de grade no fundo */
+  background-size: 30px 30px;
 }
 
 .admin-container {
@@ -54,7 +54,7 @@ body {
 }
 
 .metric-card::before {
-  content: "SYSTEM_DATA";
+  content: ;
   position: absolute;
   top: 2px;
   right: 5px;
@@ -164,7 +164,7 @@ body {
   padding: 1rem;
   border: none;
   cursor: pointer;
-  clip-path: polygon(0 0, 90% 0, 100% 30%, 100% 100%, 0 100%); /* Corte diagonal */
+  clip-path: polygon(0 0, 90% 0, 100% 30%, 100% 100%, 0 100%);
   transition: 0.3s;
 }
 
@@ -196,7 +196,7 @@ body {
 }
 
 .admin-navbar::after {
-  content: "ACCESS_GRANTED";
+  content: ;
   position: absolute;
   bottom: -15px;
   right: 20px;
