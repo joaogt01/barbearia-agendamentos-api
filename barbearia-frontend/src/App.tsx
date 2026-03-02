@@ -1,4 +1,4 @@
-import {BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import {BrowserRouter, Routes, Route,Navigate, Link } from "react-router-dom";
 import Login from "./pages/Login";
 import Barbers from "./pages/Barbers";
 import Register from "./pages/Register";
@@ -8,10 +8,13 @@ import DashboardClient from "./pages/DashboardClient";
 import { DashboardBarber } from "./pages/DashboardBarber";
 import AdminBarberForm from "./components/AdminBarberForm";
 import AdminServices from "./pages/AdminServices";
+import Navbar from "./components/AdminNavbar";
 
 
 function App() {
   return (
+    <>
+      <Navbar />
          <Routes>
            <Route path="/login" element={<Login />} />
            <Route path="/register" element={<Register />} />
@@ -64,6 +67,7 @@ function App() {
 
            <Route path="*" element={<Login />} />
          </Routes>
+    </>
      );
 }
 
