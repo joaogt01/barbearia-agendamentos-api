@@ -14,9 +14,16 @@ import java.time.LocalDateTime;
 public class AppointmentResponse {
 
     private Long id;
+
+    private Long clientId;
     private String clientName;
+
+    private Long barberId;
     private String barberName;
+
+    private Long serviceId;
     private String serviceName;
+    private Integer duracao;
     private BigDecimal preco;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")

@@ -29,4 +29,12 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             "AND CAST(a.dateTime AS date) = CURRENT_DATE " +
             "ORDER BY a.dateTime ASC")
     List<Appointment> findTodayByBarberEmail(@Param("email") String email);
+
+    @Query("SELECT COUNT(a) > 0 FROM Appointment a WHERE a.barber.id = :barberId " +
+            "AND a.status != 'CANCELADO' " +
+            "AND (:start < (a.dateTime + (a.service.duracaoMinutos * interval '1 minute'))) " +
+            "AND (:end > a.dateTime)")
+    boolean existsConflict(@Param("barberId") Long barberId,
+                           @Param("start") LocalDateTime start,
+                           @Param("end") LocalDateTime end);
 }

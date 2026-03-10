@@ -7,10 +7,7 @@ import br.com.barbearia_agendamentos_api.domain.mapper.AppointmentMapper;
 import br.com.barbearia_agendamentos_api.dto.appointment.AppointmentRequest;
 import br.com.barbearia_agendamentos_api.dto.appointment.AppointmentResponse;
 import br.com.barbearia_agendamentos_api.dto.appointment.UpdateStatusRequest;
-import br.com.barbearia_agendamentos_api.repository.AppointmentRepository;
-import br.com.barbearia_agendamentos_api.repository.BarberRepository;
-import br.com.barbearia_agendamentos_api.repository.ServiceRepository;
-import br.com.barbearia_agendamentos_api.repository.UserRepository;
+import br.com.barbearia_agendamentos_api.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +26,8 @@ public class AppointmentService {
     private final BarberRepository barberRepository;
     private final ServiceRepository serviceRepository;
     private final UserRepository userRepository;
+    private final BusinessHoursRepository businessHoursRepository;
+    private final ScheduleBlockRepository scheduleBlockRepository;
     private final AppointmentMapper mapper;
 
     @Transactional
@@ -41,27 +40,37 @@ public class AppointmentService {
 
         var client = getAuthenticatedUser();
 
-        LocalDateTime appointmentTime = request.getTime();
+        LocalDateTime start = request.getTime();
+        LocalDateTime end = start.plusMinutes(service.getDuracaoMinutos());
 
-        if (appointmentTime.isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("Protocolo inválido: Não é possível agendar no passado.");
+        var businessHours = businessHoursRepository.findByDiaSemana(start.getDayOfWeek())
+                .orElseThrow(() -> new RuntimeException("Barbearia fechada neste dia."));
+
+        if (start.toLocalTime().isBefore(businessHours.getHoraAbertura()) ||
+                end.toLocalTime().isAfter(businessHours.getHoraFechamento())) {
+            throw new RuntimeException("Fora do horário de funcionamento da barbearia.");
         }
 
-        boolean isOccupied = repository.existsByBarberIdAndDateTimeAndStatusNot(
-                barber.getId(),
-                appointmentTime,
-                AppointmentStatus.CANCELADO
-        );
+        boolean isBlocked = scheduleBlockRepository.findByBarberIdAndData(barber.getId(), start.toLocalDate())
+                .stream()
+                .anyMatch(block -> start.toLocalTime().isBefore(block.getHoraFim()) &&
+                        end.toLocalTime().isAfter(block.getHoraInicio()));
 
-        if (isOccupied) {
-            throw new RuntimeException("Conflito de agenda: Este barbeiro já possui um compromisso neste horário.");
+        if (isBlocked) {
+            throw new RuntimeException("O barbeiro possui um bloqueio de agenda neste horário.");
+        }
+
+
+        boolean hasConflict = repository.existsConflict(barber.getId(), start, end);
+        if (hasConflict) {
+            throw new RuntimeException("Conflito de agenda: Este barbeiro já possui um compromisso neste intervalo.");
         }
 
         Appointment appointment = Appointment.builder()
                 .client(client)
                 .barber(barber)
                 .service(service)
-                .dateTime(appointmentTime)
+                .dateTime(start)
                 .status(AppointmentStatus.PENDENTE)
                 .build();
 

@@ -11,12 +11,16 @@ public class AppointmentMapper {
 
         return AppointmentResponse.builder()
                 .id(entity.getId())
+                .clientId(entity.getClient().getId())
                 .clientName(entity.getClient().getNome())
+                .barberId(entity.getBarber().getId())
                 .barberName(entity.getBarber().getUser().getNome())
+                .serviceId(entity.getService().getId())
                 .serviceName(entity.getService().getNome())
                 .preco(entity.getService().getPreco())
+                .duracao(entity.getService().getDuracaoMinutos())
                 .dateTime(entity.getDateTime())
-                .status(entity.getStatus().name())
+                .status(entity.getStatus() != null ? entity.getStatus().name() : null)
                 .build();
     }
 

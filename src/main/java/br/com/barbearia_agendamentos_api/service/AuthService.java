@@ -1,6 +1,7 @@
 package br.com.barbearia_agendamentos_api.service;
 
 import br.com.barbearia_agendamentos_api.domain.entity.User;
+import br.com.barbearia_agendamentos_api.domain.enums.Role;
 import br.com.barbearia_agendamentos_api.dto.auth.AuthResponse;
 import br.com.barbearia_agendamentos_api.dto.auth.LoginRequest;
 import br.com.barbearia_agendamentos_api.dto.auth.RegisterRequest;
@@ -33,7 +34,7 @@ public class AuthService {
         user.setNome(request.getNome());
         user.setEmail(request.getEmail());
         user.setSenha(passwordEncoder.encode(request.getSenha()));
-        user.setRole(request.getRole());
+        user.setRole(Role.CLIENTE);
         user.setAtivo(true);
         user.setDataCriacao(LocalDateTime.now());
 

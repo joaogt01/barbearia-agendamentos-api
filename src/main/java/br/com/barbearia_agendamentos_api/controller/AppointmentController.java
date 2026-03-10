@@ -25,7 +25,6 @@ public class AppointmentController {
     public ResponseEntity<List<AppointmentResponse>> getMyMonth(
             @AuthenticationPrincipal UserDetails userDetails) {
 
-        // Buscamos o email do barbeiro logado através do Token JWT
         String email = userDetails.getUsername();
         List<AppointmentResponse> appointments = appointmentService.findMonthlyAppointmentsByBarber(email);
 
