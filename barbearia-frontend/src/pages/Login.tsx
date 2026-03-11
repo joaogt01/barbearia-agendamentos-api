@@ -32,17 +32,18 @@ export default function Login() {
 
        api.defaults.headers.Authorization = `Bearer ${token}`;
 
-       const normalizedRole = role ? role.toUpperCase() : "";
+       const cleanRole = role ? role.replace("ROLE_", "").toUpperCase() : "";
 
-       if (normalizedRole === "ADMIN") {
-         navigate("/dashboard-admin");
-       } else if (normalizedRole === "BARBEIRO" || normalizedRole === "ROLE_BARBEIRO") {
-         navigate("/dashboard-barber");
-       } else if (normalizedRole === "CLIENTE" || normalizedRole === "ROLE_CLIENTE") {
-         navigate("/dashboard-client");
+       console.log("Acessando como:", cleanRole);
+
+       if (cleanRole === "ADMIN") {
+           navigate("/dashboard-admin");
+       } else if (cleanRole === "BARBEIRO" || cleanRole === "BARBER") {
+           navigate("/dashboard-barber");
+       } else if (cleanRole === "CLIENTE" || cleanRole === "CLIENT") {
+           navigate("/dashboard-client");
        } else {
-         console.error("Role não reconhecida ou ausente:", role);
-         setError("Erro de permissão: Perfil não identificado.");
+           setError("Perfil não identificado no sistema.");
        }
 
      } catch (err: any) {

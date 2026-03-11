@@ -37,8 +37,10 @@ public class AppointmentController {
     }
 
     @GetMapping("/today")
-    public ResponseEntity<List<AppointmentResponse>> getTodaysAppointments() {
-        return ResponseEntity.ok(appointmentService.getTodaysAppointments());
+    public ResponseEntity<List<AppointmentResponse>> getTodaysAppointments(@AuthenticationPrincipal UserDetails userDetails) {
+        String email = userDetails.getUsername();
+        List<AppointmentResponse> appointments = appointmentService.findTodayAppointmentsByBarber(email);
+        return ResponseEntity.ok(appointments);
     }
 
     @GetMapping("/barber/{barberId}")

@@ -152,3 +152,29 @@
   background: var(--cyber-blue);
   box-shadow: 0 0 15px var(--cyber-blue);
 }
+
+.today-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.apt-card {
+  background: rgba(0, 0, 0, 0.6);
+  border-left: 4px solid #00f3ff;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.complete-btn {
+  background: #39ff14;
+  color: #000;
+  border: none;
+  padding: 8px 12px;
+  font-weight: bold;
+  cursor: pointer;
+  clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+}
