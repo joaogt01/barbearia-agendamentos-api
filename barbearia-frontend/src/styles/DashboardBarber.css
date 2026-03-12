@@ -178,3 +178,14 @@
   cursor: pointer;
   clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
 }
+
+.apt-card.status-concluido {
+  opacity: 0.5;
+  filter: grayscale(0.8);
+  border-left: 4px solid #39ff14;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.apt-card.status-concluido .complete-btn {
+  display: none;
+}

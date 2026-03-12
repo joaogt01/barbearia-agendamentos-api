@@ -15,7 +15,7 @@ export default function AdminNavbar() {
   return (
     <nav className="navbar">
       <div className="nav-logo">
-        <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>RASPA COCO</Link>
+        <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>BARBERPUNK</Link>
       </div>
 
       <div className="nav-links">

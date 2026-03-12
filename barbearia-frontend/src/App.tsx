@@ -8,6 +8,7 @@ import { DashboardBarber } from "./pages/DashboardBarber";
 import AdminBarberForm from "./components/AdminBarberForm";
 import AdminServices from "./pages/AdminServices";
 import Navbar from "./components/AdminNavbar";
+import {BarberScheduleToday} from "./pages/BarberScheduleToday";
 
 function App() {
   const userRole = localStorage.getItem("role")?.toUpperCase();
@@ -64,6 +65,16 @@ function App() {
             </PrivateRoute>
           }
         />
+
+        <Route
+          path="/barber-schedule"
+          element={
+            <PrivateRoute role="BARBEIRO">
+              <BarberScheduleToday />
+            </PrivateRoute>
+          }
+        />
+
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>

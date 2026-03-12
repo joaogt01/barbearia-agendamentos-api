@@ -10,7 +10,7 @@ interface Barber {
   id: number;
   user: {
     id: number;
-    nome: string;
+    userName: string;
     email: string;
   };
   ativo: boolean;
@@ -95,13 +95,15 @@ export default function DashboardAdmin() {
             {barbers.length === 0 && <p className="empty-msg">Nenhum barbeiro cadastrado.</p>}
             {barbers.map((b) => (
               <div key={b.id} className={`barber-card ${b.ativo ? "active" : "inactive"}`}>
-                <div className="barber-info">
-                  <h3>{b.user?.nome}</h3>
-                  <p>{b.user?.email}</p>
-                  <span className={`status-badge ${b.ativo ? "online" : "offline"}`}>
-                    {b.ativo ? "ATIVO" : "INATIVO"}
-                  </span>
-                </div>
+                  <div className="barber-info">
+                    <h3>{b.userName || "SEM NOME"}</h3>
+
+                    <p>{b.ativo ? "Profissional Verificado" : "Acesso Suspenso"}</p>
+
+                    <span className={`status-badge ${b.ativo ? "online" : "offline"}`}>
+                      {b.ativo ? "ATIVO" : "INATIVO"}
+                    </span>
+                  </div>
 
                 {b.ativo && (
                   <button className="delete-btn" onClick={() => handleDelete(b.id)}>
