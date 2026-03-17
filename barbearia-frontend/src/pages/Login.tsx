@@ -24,8 +24,6 @@ export default function Login() {
 
        const { token, role } = response.data;
 
-       console.log("Resposta do servidor:", response.data);
-
        localStorage.clear();
        localStorage.setItem("token", token);
        localStorage.setItem("role", role);
@@ -33,8 +31,6 @@ export default function Login() {
        api.defaults.headers.Authorization = `Bearer ${token}`;
 
        const cleanRole = role ? role.replace("ROLE_", "").toUpperCase() : "";
-
-       console.log("Acessando como:", cleanRole);
 
        if (cleanRole === "ADMIN") {
            navigate("/dashboard-admin");

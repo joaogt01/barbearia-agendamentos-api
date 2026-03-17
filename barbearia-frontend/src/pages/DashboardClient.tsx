@@ -13,7 +13,7 @@ interface Service {
 
 interface Barber {
   id: number;
-  user: { nome: string };
+  user: { userName: string };
   ativo: boolean;
 }
 
