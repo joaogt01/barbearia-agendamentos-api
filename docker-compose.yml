@@ -1,0 +1,50 @@
+services:
+  db:
+    image: postgres:15
+    container_name: barber-db
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - barber-network
+
+
+  api:
+    build: .
+    container_name: barber-api
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
+    depends_on:
+      - db
+    networks:
+      - barber-network
+
+  frontend:
+    build: ./barbearia-frontend
+    container_name: barber-front
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    networks:
+      - barber-network
+
+networks:
+  barber-network:
+    driver: bridge
+
+volumes:
+  pgdata:
