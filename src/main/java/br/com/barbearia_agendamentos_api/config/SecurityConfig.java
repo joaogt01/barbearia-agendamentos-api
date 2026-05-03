@@ -38,20 +38,27 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/services/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/barbers/**").permitAll()
 
-                        .requestMatchers(HttpMethod.POST, "/api/appointments").authenticated()
-                        .requestMatchers("/api/appointments/today").hasAnyAuthority("ADMIN", "BARBEIRO", "ROLE_BARBEIRO", "ROLE_ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/appointments/*/status").hasAnyAuthority("ADMIN", "BARBEIRO", "ROLE_BARBEIRO", "ROLE_ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/api/appointments/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/appointments")
+                        .hasAnyAuthority("CLIENTE", "ADMIN")
+
+                        .requestMatchers("/api/appointments/today")
+                        .hasAnyAuthority("ADMIN", "BARBEIRO")
+                        .requestMatchers(HttpMethod.PUT, "/api/appointments/*/status")
+                        .hasAnyAuthority("ADMIN", "BARBEIRO")
+
+                        .requestMatchers("/api/appointments/my-month")
+                        .hasAnyAuthority("BARBEIRO", "ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/api/appointments/**")
+                        .authenticated()
 
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/services/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/services/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/services/**").hasAuthority("ADMIN")
-
-                        .requestMatchers("/api/appointments/my-month").hasAnyRole("BARBEIRO", "ADMIN")
+                        .requestMatchers("/api/users/**").hasAuthority("ADMIN")
 
                         .requestMatchers("/api/**").authenticated()
-
                         .anyRequest().authenticated()
 
                 )
