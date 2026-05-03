@@ -1,85 +1,84 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import PrivateRoute from "./components/PrivateRoute";
-import DashboardAdmin from "./pages/DashboardAdmin";
-import DashboardClient from "./pages/DashboardClient";
-import { DashboardBarber } from "./pages/DashboardBarber";
-import AdminBarberForm from "./components/AdminBarberForm";
-import AdminServices from "./pages/AdminServices";
-import Navbar from "./components/AdminNavbar";
-import {BarberScheduleToday} from "./pages/BarberScheduleToday";
+import { useAuth } from "./context/AuthContext";
 
-function App() {
-  const userRole = localStorage.getItem("role")?.toUpperCase();
-  const isAuthenticated = !!localStorage.getItem("token");
+import Login              from "./pages/Login";
+import Register           from "./pages/Register";
+import PrivateRoute       from "./components/PrivateRoute";
+import DashboardAdmin     from "./pages/DashboardAdmin";
+import DashboardClient    from "./pages/DashboardClient";
+import { DashboardBarber }     from "./pages/DashboardBarber";
+import { BarberScheduleToday } from "./pages/BarberScheduleToday";
+import AdminServices      from "./pages/AdminServices";
+import AdminBarberForm    from "./components/AdminBarberForm";
 
-  return (
-    <>
-      {isAuthenticated && <Navbar />}
+export default function App() {
+    const { isAuthenticated, user } = useAuth();
 
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+    const defaultRedirect = () => {
+        if (!isAuthenticated) return "/login";
+        if (user?.role === "ADMIN")    return "/dashboard-admin";
+        if (user?.role === "BARBEIRO") return "/dashboard-barber";
+        return "/dashboard-client";
+    };
 
-        <Route
-          path="/dashboard-barber"
-          element={
-            <PrivateRoute role="BARBEIRO">
-              <DashboardBarber />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/dashboard-client"
-          element={
-            <PrivateRoute role="CLIENTE">
-              <DashboardClient />
-            </PrivateRoute>
-          }
-        />
+    return (
+        <Routes>
+            <Route path="/login"    element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
-        <Route
-          path="/dashboard-admin"
-          element={
-            <PrivateRoute role="ADMIN">
-              <DashboardAdmin />
-            </PrivateRoute>
-          }
-        />
+            <Route
+                path="/dashboard-admin"
+                element={
+                    <PrivateRoute role="ADMIN">
+                        <DashboardAdmin />
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/admin/servicos"
+                element={
+                    <PrivateRoute role="ADMIN">
+                        <AdminServices />
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/admin/cadastrar-barbeiro"
+                element={
+                    <PrivateRoute role="ADMIN">
+                        <AdminBarberForm />
+                    </PrivateRoute>
+                }
+            />
 
-        <Route
-          path="/admin/servicos"
-          element={
-            <PrivateRoute role="ADMIN">
-              <AdminServices />
-            </PrivateRoute>
-          }
-        />
+            <Route
+                path="/dashboard-barber"
+                element={
+                    <PrivateRoute role="BARBEIRO">
+                        <DashboardBarber />
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/barber-schedule"
+                element={
+                    <PrivateRoute role="BARBEIRO">
+                        <BarberScheduleToday />
+                    </PrivateRoute>
+                }
+            />
 
-        <Route
-          path="/admin/cadastrar-barbeiro"
-          element={
-            <PrivateRoute role="ADMIN">
-              <AdminBarberForm />
-            </PrivateRoute>
-          }
-        />
+            <Route
+                path="/dashboard-client"
+                element={
+                    <PrivateRoute role="CLIENTE">
+                        <DashboardClient />
+                    </PrivateRoute>
+                }
+            />
 
-        <Route
-          path="/barber-schedule"
-          element={
-            <PrivateRoute role="BARBEIRO">
-              <BarberScheduleToday />
-            </PrivateRoute>
-          }
-        />
-
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
-    </>
-  );
+            <Route path="/"  element={<Navigate to={defaultRedirect()} replace />} />
+            <Route path="*"  element={<Navigate to={defaultRedirect()} replace />} />
+        </Routes>
+    );
 }
-
-export default App;

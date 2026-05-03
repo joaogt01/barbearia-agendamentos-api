@@ -1,35 +1,55 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+
+type Role = "ADMIN" | "CLIENTE" | "BARBEIRO";
+
+type AuthUser = {
+  token: string;
+  role: Role;
+};
 
 type AuthContextType = {
-  token: string | null;
-  login: (token: string) => void;
+  user: AuthUser | null;
+  isAuthenticated: boolean;
+  login: (token: string, role: string) => void;
   logout: () => void;
 };
 
-const AuthContext = createContext({} as AuthContextType);
+const AuthContext = createContext<AuthContextType>({} as AuthContextType);
+
+function getInitialUser(): AuthUser | null {
+  const token = localStorage.getItem("token");
+  const role  = localStorage.getItem("role") as Role | null;
+  if (token && role) return { token, role };
+  return null;
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [token, setToken] = useState<string | null>(
-    localStorage.getItem("token")
-  );
+  const [user, setUser] = useState<AuthUser | null>(getInitialUser);
 
-  function login(newToken: string) {
-    localStorage.setItem("token", newToken);
-    setToken(newToken);
-  }
+  const login = useCallback((token: string, rawRole: string) => {
+    // Normaliza: remove prefixo "ROLE_" se existir
+    const role = rawRole.replace("ROLE_", "").toUpperCase() as Role;
 
-  function logout() {
-    localStorage.removeItem("token");
-    setToken(null);
-  }
+    localStorage.setItem("token", token);
+    localStorage.setItem("role", role);
+
+    setUser({ token, role });
+  }, []);
+
+  const logout = useCallback(() => {
+    localStorage.clear();
+    setUser(null);
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ token, login, logout }}>
-      {children}
-    </AuthContext.Provider>
+      <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, logout }}>
+        {children}
+      </AuthContext.Provider>
   );
 }
 
 export function useAuth() {
-  return useContext(AuthContext);
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth deve ser usado dentro de AuthProvider");
+  return ctx;
 }

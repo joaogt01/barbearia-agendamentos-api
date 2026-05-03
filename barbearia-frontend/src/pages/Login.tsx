@@ -1,89 +1,90 @@
 import { useState } from "react";
 import { api } from "../api/api";
 import { useNavigate, Link } from "react-router-dom";
-import "../styles/login.css";
+import { useAuth } from "../context/AuthContext";
+import "../styles/auth.css";
 
 export default function Login() {
-  const navigate = useNavigate();
+    const navigate = useNavigate();
+    const { login } = useAuth();
 
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
+    const [email, setEmail]     = useState("");
+    const [senha, setSenha]     = useState("");
+    const [loading, setLoading] = useState(false);
+    const [error, setError]     = useState("");
 
-  async function handleLogin(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true)
-    setError("")
+    async function handleLogin(e: React.FormEvent) {
+        e.preventDefault();
+        setLoading(true);
+        setError("");
 
-    try {
-     const response = await api.post("/auth/login", {
-         email: email,
-         senha: senha
-       });
+        try {
+            const { data } = await api.post("/auth/login", { email, senha });
+            const { token, role } = data;
 
-       const { token, role } = response.data;
+            login(token, role);
 
-       localStorage.clear();
-       localStorage.setItem("token", token);
-       localStorage.setItem("role", role);
+            api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
-       api.defaults.headers.Authorization = `Bearer ${token}`;
+            const normalizedRole = role.replace("ROLE_", "").toUpperCase();
 
-       const cleanRole = role ? role.replace("ROLE_", "").toUpperCase() : "";
+            if (normalizedRole === "ADMIN")           navigate("/dashboard-admin");
+            else if (normalizedRole === "BARBEIRO")   navigate("/dashboard-barber");
+            else if (normalizedRole === "CLIENTE")    navigate("/dashboard-client");
+            else setError("Perfil não reconhecido. Contate o suporte.");
+        } catch (err: any) {
+            setError(
+                err.response?.data?.message || "Credenciais inválidas ou erro no servidor."
+            );
+        } finally {
+            setLoading(false);
+        }
+    }
 
-       if (cleanRole === "ADMIN") {
-           navigate("/dashboard-admin");
-       } else if (cleanRole === "BARBEIRO" || cleanRole === "BARBER") {
-           navigate("/dashboard-barber");
-       } else if (cleanRole === "CLIENTE" || cleanRole === "CLIENT") {
-           navigate("/dashboard-client");
-       } else {
-           setError("Perfil não identificado no sistema.");
-       }
+    return (
+        <div className="auth-page">
+            <div className="auth-box auth-box--login">
+                <h1 className="auth-title">LOGIN</h1>
 
-     } catch (err: any) {
-       setError("Credenciais inválidas ou erro no servidor");
-     }
-  }
+                {error && <div className="cyber-error-msg">{error}</div>}
 
-  return (
-      <div className="login-page">
-            <div className="login-box">
-              <h1 className="login-title">LOGIN</h1>
+                <form onSubmit={handleLogin}>
+                    <div className="auth-field">
+                        <label htmlFor="email">EMAIL</label>
+                        <input
+                            id="email"
+                            type="email"
+                            placeholder="seuemail@nightcity.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            autoComplete="email"
+                        />
+                    </div>
 
-              <form onSubmit={handleLogin}>
-                <div className="login-field">
-                  <label>EMAIL</label>
-                  <input
-                    type="email"
-                    placeholder="seuemail@nightcity.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
+                    <div className="auth-field">
+                        <label htmlFor="senha">SENHA</label>
+                        <input
+                            id="senha"
+                            type="password"
+                            placeholder="••••••••"
+                            value={senha}
+                            onChange={(e) => setSenha(e.target.value)}
+                            required
+                            autoComplete="current-password"
+                        />
+                    </div>
+
+                    <button type="submit" className="auth-btn" disabled={loading}>
+                        {loading ? "AUTENTICANDO..." : "ENTRAR"}
+                    </button>
+                </form>
+
+                <div className="auth-footer">
+                    AINDA NÃO É REGISTRADO?
+                    <Link to="/register">CRIAR CONTA</Link>
                 </div>
-
-                <div className="login-field">
-                  <label>SENHA</label>
-                  <input
-                    type="password"
-                    placeholder="********"
-                    value={senha}
-                    onChange={(e) => setSenha(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <button type="submit" className="login-btn">
-                  ENTRAR
-                </button>
-              </form>
-
-              <div className="login-footer">
-                AINDA NÃO É REGISTRADO? <Link to="/register">CRIAR CONTA</Link>
-              </div>
             </div>
-          </div>
-  );
+        </div>
+    );
 }

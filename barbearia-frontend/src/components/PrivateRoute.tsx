@@ -1,20 +1,22 @@
 import { Navigate } from "react-router-dom";
-import React, { type ReactNode } from "react";
+import type { ReactNode } from "react";
+import { useAuth } from "../context/AuthContext";
 
-type PrivateRouteProps = {
+type Props = {
     children: ReactNode;
     role?: "ADMIN" | "CLIENTE" | "BARBEIRO";
-    };
+};
 
-export default function PrivateRoute({ children, role }: PrivateRouteProps) {
-  const token = localStorage.getItem("token");
-  const userRole = localStorage.getItem("role");
+export default function PrivateRoute({ children, role }: Props) {
+    const { isAuthenticated, user } = useAuth();
 
-  if (!token) {
-    return <Navigate to="/login" />;
-  }
+    if (!isAuthenticated) {
+        return <Navigate to="/login" replace />;
+    }
 
-  if (role && role !== userRole) return <Navigate to="/login" />
+    if (role && user?.role !== role) {
+        return <Navigate to="/login" replace />;
+    }
 
-  return <>{children}</>;
+    return <>{children}</>;
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { api } from "../api/api";
 import "../styles/dashboard.css";
 
@@ -14,108 +14,120 @@ interface Service {
   preco: number;
 }
 
-interface AdminBarberFormProps {
+interface Props {
   onBarberCreated?: () => void;
 }
 
-export default function AdminBarberForm({ onBarberCreated }: AdminBarberFormProps) {
-  const [availableUsers, setAvailableUsers] = useState([]);
-  const [availableServices, setAvailableServices] = useState([]);
-  const [selectedUserId, setSelectedUserId] = useState("");
-  const [selectedServices, setSelectedServices] = useState<number[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("")
+export default function AdminBarberForm({ onBarberCreated }: Props) {
+  const [availableUsers, setAvailableUsers]       = useState<User[]>([]);
+  const [availableServices, setAvailableServices] = useState<Service[]>([]);
+  const [selectedUserId, setSelectedUserId]       = useState("");
+  const [selectedServices, setSelectedServices]   = useState<number[]>([]);
+  const [loading, setLoading]                     = useState(false);
+  const [error, setError]                         = useState("");
+  const [success, setSuccess]                     = useState("");
 
-  useEffect(() => {
-
-    const fetchData = async () => {
-      try {
-        const [usersRes, servicesRes] = await Promise.all([
-          api.get("/api/users/available-users"),
-          api.get("/api/services")
-        ]);
-        setAvailableUsers(usersRes.data);
-        setAvailableServices(servicesRes.data);
-      } catch (err) {
-        console.error("Erro ao carregar dados", err);
-      }
-    };
-    fetchData();
+  const fetchData = useCallback(async () => {
+    try {
+      const [usersRes, servicesRes] = await Promise.all([
+        api.get<User[]>("/api/users/available-users"),
+        api.get<Service[]>("/api/services"),
+      ]);
+      setAvailableUsers(usersRes.data);
+      setAvailableServices(servicesRes.data);
+    } catch {
+      setError("Erro ao carregar dados. Tente novamente.");
+    }
   }, []);
 
+  useEffect(() => { fetchData(); }, [fetchData]);
+
   const handleCheckboxChange = (serviceId: number) => {
-    setSelectedServices(prev =>
-      prev.includes(serviceId)
-        ? prev.filter(id => id !== serviceId)
-        : [...prev, serviceId]
+    setSelectedServices((prev) =>
+        prev.includes(serviceId)
+            ? prev.filter((id) => id !== serviceId)
+            : [...prev, serviceId]
     );
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedUserId) return alert("Selecione um usuário!");
+    if (!selectedUserId) {
+      setError("Selecione um usuário.");
+      return;
+    }
 
     setLoading(true);
+    setError("");
+    setSuccess("");
+
     try {
       await api.post("/api/barbers", {
         userId: Number(selectedUserId),
-        serviceIds: selectedServices
+        serviceIds: selectedServices,
       });
-      alert("Perfil profissional criado com sucesso!");
 
+      setSuccess("Perfil profissional criado com sucesso!");
       setSelectedUserId("");
       setSelectedServices([]);
-      fetchData();
-      if (onBarberCreated) onBarberCreated();
+
+      await fetchData();
+      onBarberCreated?.();
     } catch (err: any) {
-      alert("Erro ao salvar: " + err.response?.data?.message);
+      setError(err.response?.data?.message || "Erro ao salvar. Tente novamente.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="cyber-card">
-      <h2 className="cyber-title">CONFIGURAR BARBEIRO</h2>
+      <div className="cyber-card">
+        <h2 className="section-header">CONFIGURAR BARBEIRO</h2>
 
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label className="cyber-label">SELECIONE O PROFISSIONAL:</label>
-          <select
-            className="cyber-input"
-            value={selectedUserId}
-            onChange={(e) => setSelectedUserId(e.target.value)}
-            required
-          >
-            <option value=""> Clique para selecionar </option>
-            {availableUsers.map((user: any) => (
-              <option key={user.id} value={user.id}>
-                {user.nome} ({user.email})
-              </option>
-            ))}
-          </select>
-        </div>
+        {error   && <div className="cyber-error-msg">{error}</div>}
+        {success && <div className="cyber-success-msg">{success}</div>}
 
-        <div className="form-group">
-          <label className="cyber-label">SERVIÇOS DISPONÍVEIS:</label>
-          <div className="services-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '10px' }}>
-            {availableServices.map((service: any) => (
-              <label key={service.id} className="cyber-checkbox-container" style={{ cursor: 'pointer' }}>
-                <input
-                  type="checkbox"
-                  checked={selectedServices.includes(service.id)}
-                  onChange={() => handleCheckboxChange(service.id)}
-                />
-                <span style={{ marginLeft: '8px' }}>{service.nome}</span>
-              </label>
-            ))}
+        <form onSubmit={handleSubmit}>
+          <div className="cyber-form-group">
+            <label className="cyber-form-label">SELECIONE O PROFISSIONAL</label>
+            <select
+                className="cyber-select"
+                value={selectedUserId}
+                onChange={(e) => setSelectedUserId(e.target.value)}
+                required
+            >
+              <option value="">— Clique para selecionar —</option>
+              {availableUsers.map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.nome} ({user.email})
+                  </option>
+              ))}
+            </select>
           </div>
-        </div>
 
-        <button type="submit" className="cyber-button" disabled={loading} style={{ marginTop: '20px' }}>
-          {loading ? "SALVANDO..." : "VINCULAR BARBEIRO"}
-        </button>
-      </form>
-    </div>
+          <div className="cyber-form-group">
+            <label className="cyber-form-label">SERVIÇOS DO BARBEIRO</label>
+            <div className="checkbox-grid">
+              {availableServices.map((service) => (
+                  <label key={service.id} className="checkbox-item">
+                    <input
+                        type="checkbox"
+                        checked={selectedServices.includes(service.id)}
+                        onChange={() => handleCheckboxChange(service.id)}
+                    />
+                    <span>{service.nome}</span>
+                    <small style={{ color: "var(--cyber-green)", marginLeft: "auto" }}>
+                      R$ {service.preco.toFixed(2)}
+                    </small>
+                  </label>
+              ))}
+            </div>
+          </div>
+
+          <button type="submit" className="btn-primary" disabled={loading}>
+            {loading ? "SALVANDO..." : "VINCULAR BARBEIRO"}
+          </button>
+        </form>
+      </div>
   );
 }

@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { api } from "../api/api";
-import "../styles/DashboardBarber.css";
+import AdminNavbar from "../components/AdminNavbar";
+import "../styles/dashboard.css";
 
 interface Appointment {
   id: number;
@@ -14,78 +15,88 @@ interface Appointment {
 export function BarberScheduleToday() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState("");
 
-  const fetchToday = async () => {
+  const fetchToday = useCallback(async () => {
     try {
-      const response = await api.get("/api/appointments/today");
-      setAppointments(response.data);
-    } catch (err) {
-      console.error("Erro ao buscar agenda:", err);
+      const res = await api.get<Appointment[]>("/api/appointments/today");
+      setAppointments(res.data);
+    } catch {
+      setError("Erro ao buscar agenda do dia.");
     } finally {
       setLoading(false);
     }
-  };
-
-  useEffect(() => {
-    fetchToday();
   }, []);
+
+  useEffect(() => { fetchToday(); }, [fetchToday]);
 
   const handleUpdateStatus = async (id: number, newStatus: string) => {
     try {
       await api.put(`/api/appointments/${id}/status`, { status: newStatus });
       fetchToday();
-    } catch (err) {
-      alert("Erro ao atualizar status.");
+    } catch {
+      setError("Erro ao atualizar status.");
     }
   };
 
+  const today = new Date().toLocaleDateString("pt-BR", {
+    weekday: "long",
+    day: "2-digit",
+    month: "long",
+  }).toUpperCase();
+
+  if (loading) return <div className="cyber-loading">CARREGANDO AGENDA...</div>;
+
   return (
-    <div className="barber-page">
-      <header style={{ textAlign: 'center', marginBottom: '40px' }}>
-        <h1 className="barber-title">AGENDA DO DIA</h1>
-        <p className="barber-subtitle">
-          {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' }).toUpperCase()}
-        </p>
-      </header>
+      <div className="page-container">
+        <AdminNavbar />
 
-      <div className="today-grid">
-        {appointments.length === 0 ? (
-          <div className="empty-msg-container">
-            <p className="empty-msg"> NENHUM COMPROMISSO PARA HOJE </p>
-          </div>
-        ) : (
-          appointments.map((apt) => (
-            <div key={apt.id} className={`apt-card status-${apt.status.toLowerCase()}`}>
-              <div className="apt-info">
+        <header className="page-header">
+          <h1 className="page-title">AGENDA DO DIA</h1>
+          <p className="page-subtitle">{today}</p>
+        </header>
+
+        {error && <div className="cyber-error-msg">{error}</div>}
+
+        <div className="apt-grid">
+          {appointments.length === 0 ? (
+              <p className="empty-msg">NENHUM COMPROMISSO PARA HOJE</p>
+          ) : (
+              appointments.map((apt) => (
+                  <div key={apt.id} className={`apt-card status-${apt.status.toLowerCase()}`}>
+                    <div className="apt-info">
                 <span className="apt-time">
-                  {new Date(apt.dateTime).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                  {new Date(apt.dateTime).toLocaleTimeString("pt-BR", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
                 </span>
-                <strong className="apt-client">{apt.clientName.toUpperCase()}</strong>
-                <span className="apt-service">{apt.serviceName}</span>
-                <span className="apt-price">R$ {apt.price.toFixed(2)}</span>
-              </div>
+                      <strong className="apt-client">{apt.clientName.toUpperCase()}</strong>
+                      <span className="apt-service">{apt.serviceName}</span>
+                      <span className="apt-price">R$ {apt.price.toFixed(2)}</span>
+                    </div>
 
-              <div className="apt-actions">
-                {apt.status === "CONFIRMADO" && (
-                  <button
-                    className="complete-btn"
-                    onClick={() => handleUpdateStatus(apt.id, "CONCLUIDO")}
-                  >
-                    FINALIZAR
-                  </button>
-                )}
-                <span className={`status-text ${apt.status.toLowerCase()}`}>
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "8px" }}>
+                      {apt.status === "CONFIRMADO" && (
+                          <button
+                              className="btn-success"
+                              onClick={() => handleUpdateStatus(apt.id, "CONCLUIDO")}
+                          >
+                            FINALIZAR
+                          </button>
+                      )}
+                      <span className={`status-badge ${apt.status.toLowerCase()}`}>
                   {apt.status}
                 </span>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
+                    </div>
+                  </div>
+              ))
+          )}
+        </div>
 
-      <button className="back-btn" onClick={() => window.history.back()}>
-        VOLTAR AO TERMINAL
-      </button>
-    </div>
+        <button className="btn-back" onClick={() => window.history.back()}>
+          VOLTAR AO TERMINAL
+        </button>
+      </div>
   );
 }

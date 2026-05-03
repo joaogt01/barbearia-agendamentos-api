@@ -1,60 +1,55 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "../styles/navbar.css";
 
 export default function AdminNavbar() {
-  const navigate = useNavigate();
+    const { user, isAuthenticated, logout } = useAuth();
+    const navigate = useNavigate();
 
-  const role = localStorage.getItem("role")?.toUpperCase();
-  const isAuthenticated = !!localStorage.getItem("token");
+    const role = user?.role;
 
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate("/login");
-  };
+    const handleLogout = () => {
+        logout();
+        navigate("/login");
+    };
 
-  return (
-    <nav className="navbar">
-      <div className="nav-logo">
-        <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>BARBERPUNK</Link>
-      </div>
+    return (
+        <nav className="navbar">
+            <div className="nav-logo">
+                <Link to="/">BARBERPUNK</Link>
+            </div>
 
-      <div className="nav-links">
+            <div className="nav-links">
+                {role === "CLIENTE" && (
+                    <>
+                        <Link to="/dashboard-client">AGENDAR</Link>
+                    </>
+                )}
 
-        <Link className="nav-links" to="/">HOME</Link>
-        {role === "CLIENTE" && (
-          <>
-            <Link to="/agendar">NOVO AGENDAMENTO</Link>
-            <Link to="/meus-agendamentos">MINHA AGENDA</Link>
-          </>
-        )}
+                {role === "BARBEIRO" && (
+                    <>
+                        <Link to="/dashboard-barber">TERMINAL</Link>
+                        <Link to="/barber-schedule">AGENDA DO DIA</Link>
+                    </>
+                )}
 
+                {role === "ADMIN" && (
+                    <>
+                        <Link to="/dashboard-admin">SISTEMA</Link>
+                        <Link to="/admin/servicos">SERVIÇOS</Link>
+                    </>
+                )}
+            </div>
 
-        {role === "BARBEIRO" && (
-          <>
-            <Link to="/dashboard-barber">TERMINAL BARBEIRO</Link>
-            <Link to="/barber-schedule">AGENDA DO DIA</Link>
-          </>
-        )}
-
-
-        {role === "ADMIN" && (
-          <>
-            <Link to="/dashboard-admin">SISTEMA</Link>
-            <Link to="/admin/barbers">EQUIPE</Link>
-            <Link to="/admin/services">SERVIÇOS</Link>
-          </>
-        )}
-      </div>
-
-      <div className="nav-auth">
-        {isAuthenticated ? (
-          <button className="logout-btn" onClick={handleLogout}>
-            DESCONECTAR
-          </button>
-        ) : (
-          <Link to="/login" className="login-btn-nav">ENTRAR</Link>
-        )}
-      </div>
-    </nav>
-  );
+            <div className="nav-auth">
+                {isAuthenticated ? (
+                    <button className="logout-btn" onClick={handleLogout}>
+                        DESCONECTAR
+                    </button>
+                ) : (
+                    <Link to="/login" className="login-btn-nav">ENTRAR</Link>
+                )}
+            </div>
+        </nav>
+    );
 }
